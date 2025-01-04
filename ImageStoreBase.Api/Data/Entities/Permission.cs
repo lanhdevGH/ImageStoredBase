@@ -5,10 +5,7 @@ namespace ImageStoreBase.Api.Data.Entities
 {
     [Table("Permissions")]
     public class Permission
-    {
-        [Key]
-        public Guid Id { get; set; }
-        
+    {   
         [Required]
         public Guid RoleId { get; set; }
         

@@ -6,9 +6,6 @@ namespace ImageStoreBase.Api.Data.Entities
     [Table("CommandInFunctions")]
     public class CommandInFunction
     {
-        [Key]
-        public Guid Id { get; set; }
-        
         [Required]
         public Guid CommandId { get; set; }
         
