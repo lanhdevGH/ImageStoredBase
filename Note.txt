@@ -1,2 +1,8 @@
 Add-Migration InitialDB -outputdir Data/Migration
 //
+Serilog package
+Serilog.AspNetCore: Gói này chủ yếu tích hợp Serilog với ASP.NET Core, dung lượng nhẹ (thường dưới 1MB).
+Serilog.Settings.Configuration: Cho phép đọc cấu hình Serilog từ tệp cấu hình như appsettings.json, cũng rất nhẹ.
+Serilog.Sinks.Console: Ghi log ra console; chỉ là một thư viện nhỏ (dung lượng thường dưới 500KB).
+Serilog.Sinks.File: Ghi log vào file; dung lượng cũng rất nhỏ.
+//

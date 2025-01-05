@@ -2,11 +2,22 @@ using ImageStoreBase.Api.Data;
 using ImageStoreBase.Api.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region Tích hợp Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration) // Đọc cấu hình từ appsettings.json
+    .Enrich.FromLogContext()
+    .WriteTo.Console() // Ghi log ra console
+    //.WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // Ghi log vào file (mỗi ngày 1 file)
+    .CreateLogger();
 
+builder.Host.UseSerilog(); // Đặt Serilog làm Logger chính
+#endregion
+
+// Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -70,15 +81,14 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        //Log.Information("Seeding data...");
+        Log.Information("Seeding data...");
         var dbInitializer = services.GetService<DbInitializer>();
         dbInitializer.SeedingData().Wait();
     }
     catch (Exception ex)
     {
-        Console.WriteLine(ex.Message);
-        //var logger = services.GetRequiredService<ILogger<Program>>();
-        //logger.LogError(ex, "An error occurred while seeding the database.");
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
 #endregion
