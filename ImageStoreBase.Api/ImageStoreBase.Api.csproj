@@ -21,4 +21,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ImageStoreBase.Common\ImageStoreBase.Common.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -8,7 +8,8 @@ namespace ImageStoreBase.Api.Data.Entities
     public class Command : IDateTracking
     {
         [Key]
-        public Guid Id { get; set; }
+        [MaxLength(70)]
+        public string Id { get; set; }
         
         [Required]
         [MaxLength(50)]

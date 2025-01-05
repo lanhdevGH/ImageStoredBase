@@ -8,15 +8,22 @@ namespace ImageStoreBase.Api.Data.Entities
     public class Function : IDateTracking
     {
         [Key]
-        public Guid Id { get; set; }
+        [MaxLength(70)]
+        public string Id { get; set; }
         
         [Required]
         [MaxLength(200)]
         public string Name { get; set; }
-        
+
+        [MaxLength(70)]
+        public string? ParentId { get; set; }
+        public int SortOrder { get; set; }
+
+        public string Url { get; set; } = string.Empty;
+
         [MaxLength(500)]
-        public string Description { get; set; }
-        
+        public string Description { get; set; } = string.Empty;
+
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

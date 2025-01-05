@@ -58,7 +58,7 @@ namespace ImageStoreBase.Api.Data.Migrations
                 name: "Commands",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -73,8 +73,11 @@ namespace ImageStoreBase.Api.Data.Migrations
                 name: "Functions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ParentId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
+                    SortOrder = table.Column<int>(type: "int", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -231,8 +234,8 @@ namespace ImageStoreBase.Api.Data.Migrations
                 name: "CommandInFunctions",
                 columns: table => new
                 {
-                    CommandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FunctionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CommandId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
+                    FunctionId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -256,8 +259,8 @@ namespace ImageStoreBase.Api.Data.Migrations
                 columns: table => new
                 {
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FunctionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CommandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    FunctionId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
+                    CommandId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false)
                 },
                 constraints: table =>
                 {

@@ -10,10 +10,12 @@ namespace ImageStoreBase.Api.Data.Entities
         public Guid RoleId { get; set; }
         
         [Required]
-        public Guid FunctionId { get; set; }
+        [MaxLength(70)]
+        public string FunctionId { get; set; }
         
         [Required]
-        public Guid CommandId { get; set; }
+        [MaxLength(70)]
+        public string CommandId { get; set; }
 
         [ForeignKey("RoleId")]
         public Role Role { get; set; }

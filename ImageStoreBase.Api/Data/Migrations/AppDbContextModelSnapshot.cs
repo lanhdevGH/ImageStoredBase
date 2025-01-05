@@ -88,9 +88,9 @@ namespace ImageStoreBase.Api.Data.Migrations
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Command", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -115,11 +115,13 @@ namespace ImageStoreBase.Api.Data.Migrations
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.CommandInFunction", b =>
                 {
-                    b.Property<Guid>("CommandId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CommandId")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
-                    b.Property<Guid>("FunctionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("FunctionId")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.HasKey("CommandId", "FunctionId");
 
@@ -130,9 +132,9 @@ namespace ImageStoreBase.Api.Data.Migrations
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Function", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -147,8 +149,19 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("ParentId")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -216,11 +229,13 @@ namespace ImageStoreBase.Api.Data.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FunctionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("FunctionId")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
-                    b.Property<Guid>("CommandId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CommandId")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.HasKey("RoleId", "FunctionId", "CommandId");
 

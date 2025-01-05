@@ -7,10 +7,12 @@ namespace ImageStoreBase.Api.Data.Entities
     public class CommandInFunction
     {
         [Required]
-        public Guid CommandId { get; set; }
+        [MaxLength(70)]
+        public string CommandId { get; set; }
         
         [Required]
-        public Guid FunctionId { get; set; }
+        [MaxLength(70)]
+        public string FunctionId { get; set; }
 
         [ForeignKey("CommandId")]
         public Command Command { get; set; }
