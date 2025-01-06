@@ -1,5 +1,6 @@
 using ImageStoreBase.Api.Data;
 using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -55,9 +56,12 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 #endregion
 
-#region CustomServices
+#region Services
+// Đăng ký AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<DbInitializer>();
-
+// CustomService
+builder.Services.AddScoped<RoleService>();
 #endregion
 
 var app = builder.Build();

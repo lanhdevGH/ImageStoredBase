@@ -6,7 +6,7 @@ namespace ImageStoreBase.Api.Data
 {
     public class AppDbContext : IdentityDbContext<User, Role, Guid>
     {
-        public AppDbContext(DbContextOptions options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
