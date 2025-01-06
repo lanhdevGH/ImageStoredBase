@@ -64,6 +64,20 @@ builder.Services.AddTransient<DbInitializer>();
 builder.Services.AddScoped<RoleService>();
 #endregion
 
+#region CORS
+// Thêm vào phần services
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,6 +92,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAll");
 
 #region SeedingData
 using (var scope = app.Services.CreateScope())
