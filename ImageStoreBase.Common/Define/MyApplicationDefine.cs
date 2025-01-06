@@ -16,6 +16,15 @@
         public const string APPROVE = "Duyệt";
         #endregion
 
-
+        #region Function
+        public const string DASHBOARD = "Trang chủ";
+        public const string CONTENT = "Nội dung";
+        public const string STATISTIC = "Thống kê";
+        public const string SYSTEM = "Hệ thống";
+        public const string SYSTEM_USER = "Người dùng";
+        public const string SYSTEM_ROLE = "Nhóm quyền";
+        public const string SYSTEM_FUNCTION = "Chức năng";
+        public const string SYSTEM_PERMISSION = "Quyền hạn";
+        #endregion
     }
 }

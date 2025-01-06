@@ -19,78 +19,83 @@ namespace ImageStoreBase.Api.Data
 
         public async Task SeedingData()
         {
-            #region RoleDataInit
-            if (!_roleManager.Roles.Any())
+            await SeedRoles();
+            await SeedUsers();
+            await SeedFunctionsAndCommands();
+            await SeedCommandInFunctions();
+            await SeedPermissions();
+            
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task SeedRoles()
+        {
+            if (_roleManager.Roles.Any()) return;
+
+            var roles = new[] 
+            {
+                MyApplicationDefine.Customer,
+                MyApplicationDefine.User,
+                MyApplicationDefine.Admin
+            };
+
+            foreach (var roleName in roles)
             {
                 await _roleManager.CreateAsync(new Role
                 {
-                    Name = MyApplicationDefine.Customer,
-                    NormalizedName = MyApplicationDefine.Customer.ToUpper(),
-                });
-                await _roleManager.CreateAsync(new Role
-                {
-                    Name = MyApplicationDefine.User,
-                    NormalizedName = MyApplicationDefine.User.ToUpper(),
-                });
-                await _roleManager.CreateAsync(new Role
-                {
-                    Name = MyApplicationDefine.Admin,
-                    NormalizedName = MyApplicationDefine.Admin.ToUpper(),
+                    Name = roleName,
+                    NormalizedName = roleName.ToUpper()
                 });
             }
-            #endregion
+        }
 
-            #region UserDataInit
-            if (!_userManager.Users.Any())
+        private async Task SeedUsers()
+        {
+            if (_userManager.Users.Any()) return;
+
+            var users = new[]
             {
-                var result = await _userManager.CreateAsync(new User
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "admin",
-                    FirstName = "Quản trị",
-                    LastName = "1",
-                    Email = "thanhlanhlit@gmail.com",
-                    LockoutEnabled = false
-                }, "Admin@123");
-                if (result.Succeeded)
-                {
-                    var user = await _userManager.FindByNameAsync("admin");
-                    await _userManager.AddToRoleAsync(user, MyApplicationDefine.Admin);
-                }
+                new { Username = "admin", FirstName = "Quản trị", LastName = "1", 
+                      Email = "thanhlanhlit@gmail.com", Password = "Admin@123456", Role = MyApplicationDefine.Admin },
+                new { Username = "user", FirstName = "Người dùng", LastName = "1", 
+                      Email = "thanhlanh12a3@gmail.com", Password = "User@123456", Role = MyApplicationDefine.User }
+            };
 
-                var result2 = await _userManager.CreateAsync(new User
+            foreach (var userData in users)
+            {
+                var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    UserName = "user",
-                    FirstName = "Người dùng",
-                    LastName = "1",
-                    Email = "thanhlanhlit@gmail.com",
+                    UserName = userData.Username,
+                    FirstName = userData.FirstName,
+                    LastName = userData.LastName,
+                    Email = userData.Email,
                     LockoutEnabled = false
-                }, "user@123");
+                };
+
+                var result = await _userManager.CreateAsync(user, userData.Password);
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync("user");
-                    await _userManager.AddToRoleAsync(user, MyApplicationDefine.User);
+                    var createdUser = await _userManager.FindByNameAsync(userData.Username);
+                    await _userManager.AddToRoleAsync(createdUser, userData.Role);
                 }
             }
-            #endregion
+        }
 
-            #region Functon&CommandDataInit
-
+        private async Task SeedFunctionsAndCommands()
+        {
             if (!_context.Functions.Any())
             {
                 _context.Functions.AddRange(new List<Function>
                 {
-                    new Function {Id = "DASHBOARD", Description="Trang chủ", ParentId = null, SortOrder = 1,Url = "/dashboard"  },
-
-                    new Function {Id = "CONTENT",Description="Nội dung",ParentId = null,Url = "/content" },
-                    new Function {Id = "STATISTIC",Description="Thống kê", ParentId = null, Url = "/statistic" },
-                    new Function {Id = "SYSTEM", Description="Hệ thống", ParentId = null, Url = "/system" },
-
-                    new Function {Id = "SYSTEM_USER", Description="Người dùng",ParentId = "SYSTEM",Url = "/system/user"},
-                    new Function {Id = "SYSTEM_ROLE", Description="Nhóm quyền",ParentId = "SYSTEM",Url = "/system/role"},
-                    new Function {Id = "SYSTEM_FUNCTION", Description="Chức năng",ParentId = "SYSTEM",Url = "/system/function"},
-                    new Function {Id = "SYSTEM_PERMISSION", Description="Quyền hạn",ParentId = "SYSTEM",Url = "/system/permission"},
+                    new Function {Id = nameof(MyApplicationDefine.DASHBOARD), Name = MyApplicationDefine.DASHBOARD, SortOrder = 1,Url = "/dashboard"  },
+                    new Function {Id = nameof(MyApplicationDefine.CONTENT), Name = MyApplicationDefine.CONTENT, SortOrder = 2,Url = "/content"  },
+                    new Function {Id = nameof(MyApplicationDefine.STATISTIC), Name = MyApplicationDefine.STATISTIC, SortOrder = 3,Url = "/statistic" },
+                    new Function {Id = nameof(MyApplicationDefine.SYSTEM), Name = MyApplicationDefine.SYSTEM, SortOrder = 4, Url = "/system" },
+                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_USER), Name = MyApplicationDefine.SYSTEM_USER, SortOrder = 1,Url = "/system/user" },
+                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_ROLE), Name = MyApplicationDefine.SYSTEM_ROLE, SortOrder = 2,Url = "/system/role" },
+                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_FUNCTION), Name = MyApplicationDefine.SYSTEM_FUNCTION, SortOrder = 3,Url = "/system/function" },
+                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_PERMISSION), Name = MyApplicationDefine.SYSTEM_PERMISSION, SortOrder = 4,Url = "/system/permission" },
                 });
                 await _context.SaveChangesAsync();
             }
@@ -106,8 +111,10 @@ namespace ImageStoreBase.Api.Data
                     new Command(){Id = nameof(MyApplicationDefine.APPROVE), Name = MyApplicationDefine.APPROVE},
                 });
             }
-            #endregion
+        }
 
+        private async Task SeedCommandInFunctions()
+        {
             var functions = _context.Functions;
 
             if (!_context.CommandInFunctions.Any())
@@ -142,20 +149,23 @@ namespace ImageStoreBase.Api.Data
                     _context.CommandInFunctions.Add(viewAction);
                 }
             }
+        }
 
+        private async Task SeedPermissions()
+        {
             if (!_context.Permissions.Any())
             {
                 var adminRole = await _roleManager.FindByNameAsync(MyApplicationDefine.Admin);
+                var functions = _context.Functions;
+
                 foreach (var function in functions)
                 {
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.CREATE)});
+                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.CREATE) });
                     _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.UPDATE) });
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.DELETE)});
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.VIEW)});
+                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.DELETE) });
+                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.VIEW) });
                 }
             }
-
-            await _context.SaveChangesAsync();
         }
     }
 }

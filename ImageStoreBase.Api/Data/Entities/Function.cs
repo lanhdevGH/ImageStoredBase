@@ -22,7 +22,7 @@ namespace ImageStoreBase.Api.Data.Entities
         public string Url { get; set; } = string.Empty;
 
         [MaxLength(500)]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -30,7 +30,9 @@ namespace ImageStoreBase.Api.Data.Entities
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<CommandInFunction> CommandInFunctions { get; set; } = new List<CommandInFunction>();
+        public Function? FunctionParent { get; set; } = null;
+        public ICollection<Function> ChildFunctions { get; set; } = new List<Function>();
         public ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+        public ICollection<CommandInFunction> CommandInFunctions { get; set; } = new List<CommandInFunction>();
     }
 }

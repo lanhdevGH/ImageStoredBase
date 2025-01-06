@@ -84,6 +84,7 @@ using (var scope = app.Services.CreateScope())
         Log.Information("Seeding data...");
         var dbInitializer = services.GetService<DbInitializer>();
         dbInitializer.SeedingData().Wait();
+        Log.Information("Done Seeding data");
     }
     catch (Exception ex)
     {

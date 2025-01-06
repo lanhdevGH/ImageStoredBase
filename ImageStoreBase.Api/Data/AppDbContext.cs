@@ -50,6 +50,14 @@ namespace ImageStoreBase.Api.Data
                       .HasForeignKey(ia => ia.ImageId);
             });
 
+            builder.Entity<Function>(entity =>
+            {
+                entity.HasOne(f => f.FunctionParent)
+                      .WithMany(f => f.ChildFunctions)
+                      .HasForeignKey(f => f.ParentId)
+                      .IsRequired(false);
+            });
+
             builder.Entity<CommandInFunction>(entity =>
             {
                 entity.HasKey(cf => new { cf.CommandId, cf.FunctionId });

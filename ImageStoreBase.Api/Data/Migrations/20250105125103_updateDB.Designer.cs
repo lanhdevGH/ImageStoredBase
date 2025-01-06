@@ -4,6 +4,7 @@ using ImageStoreBase.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageStoreBase.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250105125103_updateDB")]
+    partial class updateDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,6 +99,7 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -162,8 +166,6 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Functions");
                 });
@@ -500,15 +502,6 @@ namespace ImageStoreBase.Api.Data.Migrations
                     b.Navigation("Function");
                 });
 
-            modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Function", b =>
-                {
-                    b.HasOne("ImageStoreBase.Api.Data.Entities.Function", "FunctionParent")
-                        .WithMany("ChildFunctions")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("FunctionParent");
-                });
-
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.ImageInAlbum", b =>
                 {
                     b.HasOne("ImageStoreBase.Api.Data.Entities.Album", "Album")
@@ -625,8 +618,6 @@ namespace ImageStoreBase.Api.Data.Migrations
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Function", b =>
                 {
-                    b.Navigation("ChildFunctions");
-
                     b.Navigation("CommandInFunctions");
 
                     b.Navigation("Permissions");
