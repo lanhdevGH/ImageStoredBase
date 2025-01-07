@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Note.txt = Note.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{544B8DD3-7D01-4D9E-BD6E-0F7EAA65B7B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageStoreBase.Api.UnitTest", "test\ImageStoreBase.Api.UnitTest\ImageStoreBase.Api.UnitTest.csproj", "{E95F9E3F-3BE3-4256-8714-CC9C2BD69836}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,8 +30,15 @@ Global
 		{14FA07F5-4B1D-4F35-BE03-507AA6FA6106}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14FA07F5-4B1D-4F35-BE03-507AA6FA6106}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14FA07F5-4B1D-4F35-BE03-507AA6FA6106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E95F9E3F-3BE3-4256-8714-CC9C2BD69836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95F9E3F-3BE3-4256-8714-CC9C2BD69836}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E95F9E3F-3BE3-4256-8714-CC9C2BD69836}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E95F9E3F-3BE3-4256-8714-CC9C2BD69836}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E95F9E3F-3BE3-4256-8714-CC9C2BD69836} = {544B8DD3-7D01-4D9E-BD6E-0F7EAA65B7B9}
 	EndGlobalSection
 EndGlobal
