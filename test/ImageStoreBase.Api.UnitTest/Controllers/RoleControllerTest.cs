@@ -3,14 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ImageStoreBase.Api.Controllers;
 using ImageStoreBase.Api.Services;
-using Xunit;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.DTOs.Roles;
-using ImageStoreBase.Api.UnitTest.Extensions;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using MockQueryable;
 
 namespace ImageStoreBase.Api.UnitTest.Controllers
 {
@@ -64,7 +60,7 @@ namespace ImageStoreBase.Api.UnitTest.Controllers
             {
                 new Role { Id = Guid.NewGuid(), Name = "Admin" },
                 new Role { Id = Guid.NewGuid(), Name = "User" }
-            }.AsAsyncQueryable());
+            }.BuildMock());
             _mockMapper.Setup(m => m.Map<List<RoleResponse>>(It.IsAny<IEnumerable<Role>>()))
                 .Returns(expectedRoles);
 
