@@ -1,9 +1,15 @@
 using ImageStoreBase.Api.Data;
 using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.Handles.Auth;
 using ImageStoreBase.Api.Services;
+using ImageStoreBase.Common.Define;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +18,7 @@ Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration) // Đọc cấu hình từ appsettings.json
     .Enrich.FromLogContext()
     .WriteTo.Console() // Ghi log ra console
-    //.WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // Ghi log vào file (mỗi ngày 1 file)
+                       //.WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // Ghi log vào file (mỗi ngày 1 file)
     .CreateLogger();
 
 builder.Host.UseSerilog(); // Đặt Serilog làm Logger chính
@@ -33,7 +39,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 #region Config_Identity
 builder.Services.AddIdentity<User, Role>()
-    .AddEntityFrameworkStores<AppDbContext>();
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Thiết lập các tùy chọn khóa tài khoản (Lockout).
@@ -50,18 +58,69 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 8; // Độ dài mật khẩu tối thiểu là 8 ký tự.
     options.Password.RequireDigit = true; // Mật khẩu phải chứa ít nhất một chữ số (0-9).
     options.Password.RequireUppercase = true; // Mật khẩu phải chứa ít nhất một chữ cái in hoa (A-Z).
+    options.Password.RequiredUniqueChars = 1;
 
     // Cấu hình người dùng (User).
     options.User.RequireUniqueEmail = true; // Email phải là duy nhất trong hệ thống.
 });
 #endregion
 
-#region Services
+#region Authentication
+builder.Services.AddAuthentication(
+    options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"], // Định nghĩa trong appsettings.json
+            ValidAudience = builder.Configuration["JwtSettings:Audience"], // Định nghĩa trong appsettings.json
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])) // Key bí mật
+        };
+
+        // Đảm bảo mọi claim từ JWT đều được ánh xạ
+        options.MapInboundClaims = false;
+    });
+#endregion
+
+#region Authorization
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy =>
+        policy.Requirements.Add(new ClaimRequirement(MyApplicationDefine.Function.SYSTEM, "CREATE")));
+});
+
+#endregion
+
+#region Config Identity Server
+//builder.Services.AddIdentityServer(options =>
+//{
+//    options.Events.RaiseErrorEvents = true;
+//    options.Events.RaiseInformationEvents = true;
+//    options.Events.RaiseFailureEvents = true;
+//    options.Events.RaiseSuccessEvents = true;
+//})
+//    .AddInMemoryClients(Config.Clients)
+//    .AddInMemoryIdentityResources(Config.IdentityResources)
+//    .AddInMemoryApiScopes(Config.ApiResources);
+#endregion
+
+#region DI Services
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<DbInitializer>();
 // CustomService
 builder.Services.AddScoped<RoleService>();
+// Authorization
+builder.Services.AddScoped<IAuthorizationHandler, ClaimRequirementHandle>();
 #endregion
 
 #region CORS
@@ -89,6 +148,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
