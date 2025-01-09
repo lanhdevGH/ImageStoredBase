@@ -16,13 +16,14 @@ namespace ImageStoreBase.Api.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                    table.UniqueConstraint("AK_AspNetRoles_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,7 +61,7 @@ namespace ImageStoreBase.Api.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -78,13 +79,18 @@ namespace ImageStoreBase.Api.Data.Migrations
                     ParentId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
                     SortOrder = table.Column<int>(type: "int", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Functions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Functions_Functions_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Functions",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -258,18 +264,18 @@ namespace ImageStoreBase.Api.Data.Migrations
                 name: "Permissions",
                 columns: table => new
                 {
-                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleName = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     FunctionId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     CommandId = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => new { x.RoleId, x.FunctionId, x.CommandId });
+                    table.PrimaryKey("PK_Permissions", x => new { x.RoleName, x.FunctionId, x.CommandId });
                     table.ForeignKey(
-                        name: "FK_Permissions_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_Permissions_AspNetRoles_RoleName",
+                        column: x => x.RoleName,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        principalColumn: "Name",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Permissions_Commands_CommandId",
@@ -346,6 +352,12 @@ namespace ImageStoreBase.Api.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoles_Name",
+                table: "AspNetRoles",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
@@ -388,6 +400,11 @@ namespace ImageStoreBase.Api.Data.Migrations
                 name: "IX_CommandInFunctions_FunctionId",
                 table: "CommandInFunctions",
                 column: "FunctionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Functions_ParentId",
+                table: "Functions",
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ImageInAlbums_ImageId",

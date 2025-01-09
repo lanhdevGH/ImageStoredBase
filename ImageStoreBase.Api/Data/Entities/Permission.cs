@@ -7,7 +7,8 @@ namespace ImageStoreBase.Api.Data.Entities
     public class Permission
     {   
         [Required]
-        public Guid RoleId { get; set; }
+        [MaxLength(70)]
+        public string RoleName { get; set; }
         
         [Required]
         [MaxLength(70)]
@@ -17,13 +18,10 @@ namespace ImageStoreBase.Api.Data.Entities
         [MaxLength(70)]
         public string CommandId { get; set; }
 
-        [ForeignKey("RoleId")]
         public Role Role { get; set; }
         
-        [ForeignKey("FunctionId")]
         public Function Function { get; set; }
         
-        [ForeignKey("CommandId")]
         public Command Command { get; set; }
     }
 }

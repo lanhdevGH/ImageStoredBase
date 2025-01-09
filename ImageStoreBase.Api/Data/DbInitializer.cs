@@ -36,7 +36,7 @@ namespace ImageStoreBase.Api.Data
             {
                 MyApplicationDefine.Role.Admin,
                 MyApplicationDefine.Role.User,
-                MyApplicationDefine.Role.Admin
+                MyApplicationDefine.Role.Customer
             };
 
             foreach (var roleName in roles)
@@ -110,6 +110,7 @@ namespace ImageStoreBase.Api.Data
                     new Command(){Id = nameof(MyApplicationDefine.Command.DELETE), Name = MyApplicationDefine.Command.DELETE},
                     new Command(){Id = nameof(MyApplicationDefine.Command.APPROVE), Name = MyApplicationDefine.Command.APPROVE},
                 });
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -160,10 +161,10 @@ namespace ImageStoreBase.Api.Data
 
                 foreach (var function in functions)
                 {
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.CREATE) });
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.UPDATE) });
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.DELETE) });
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.VIEW) });
+                    _context.Permissions.Add(new Permission { RoleName = adminRole.Name, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.CREATE) });
+                    _context.Permissions.Add(new Permission { RoleName = adminRole.Name, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.UPDATE) });
+                    _context.Permissions.Add(new Permission { RoleName = adminRole.Name, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.DELETE) });
+                    _context.Permissions.Add(new Permission { RoleName = adminRole.Name, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.VIEW) });
                 }
             }
         }

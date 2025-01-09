@@ -226,8 +226,9 @@ namespace ImageStoreBase.Api.Data.Migrations
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Permission", b =>
                 {
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RoleName")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<string>("FunctionId")
                         .HasMaxLength(70)
@@ -237,7 +238,7 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
-                    b.HasKey("RoleId", "FunctionId", "CommandId");
+                    b.HasKey("RoleName", "FunctionId", "CommandId");
 
                     b.HasIndex("CommandId");
 
@@ -257,14 +258,18 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -544,7 +549,8 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasOne("ImageStoreBase.Api.Data.Entities.Role", "Role")
                         .WithMany("Permissions")
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("RoleName")
+                        .HasPrincipalKey("Name")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

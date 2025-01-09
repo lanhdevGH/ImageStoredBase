@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageStoreBase.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250105031131_InitialDB")]
+    [Migration("20250109071616_InitialDB")]
     partial class InitialDB
     {
         /// <inheritdoc />
@@ -99,7 +99,6 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -143,7 +142,6 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -167,6 +165,8 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Functions");
                 });
@@ -229,8 +229,9 @@ namespace ImageStoreBase.Api.Data.Migrations
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Permission", b =>
                 {
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RoleName")
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<string>("FunctionId")
                         .HasMaxLength(70)
@@ -240,7 +241,7 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
-                    b.HasKey("RoleId", "FunctionId", "CommandId");
+                    b.HasKey("RoleName", "FunctionId", "CommandId");
 
                     b.HasIndex("CommandId");
 
@@ -260,14 +261,18 @@ namespace ImageStoreBase.Api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -503,6 +508,15 @@ namespace ImageStoreBase.Api.Data.Migrations
                     b.Navigation("Function");
                 });
 
+            modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Function", b =>
+                {
+                    b.HasOne("ImageStoreBase.Api.Data.Entities.Function", "FunctionParent")
+                        .WithMany("ChildFunctions")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("FunctionParent");
+                });
+
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.ImageInAlbum", b =>
                 {
                     b.HasOne("ImageStoreBase.Api.Data.Entities.Album", "Album")
@@ -538,7 +552,8 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasOne("ImageStoreBase.Api.Data.Entities.Role", "Role")
                         .WithMany("Permissions")
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("RoleName")
+                        .HasPrincipalKey("Name")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -619,6 +634,8 @@ namespace ImageStoreBase.Api.Data.Migrations
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Function", b =>
                 {
+                    b.Navigation("ChildFunctions");
+
                     b.Navigation("CommandInFunctions");
 
                     b.Navigation("Permissions");

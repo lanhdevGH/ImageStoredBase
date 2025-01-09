@@ -25,7 +25,7 @@ namespace ImageStoreBase.Api.Handles.Auth
 
             var hasPermission = _dbContext.Permissions
                 .Any(rp =>
-                    userRoles.Contains(rp.RoleId.ToString()) && // Convert Guid to string
+                    userRoles.Contains(rp.RoleName.ToString()) && // Convert Guid to string
                     rp.FunctionId == requirement.FunctionCode &&
                     rp.CommandId == requirement.ActionCode);
 

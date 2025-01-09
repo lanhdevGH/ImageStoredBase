@@ -23,6 +23,17 @@ namespace ImageStoreBase.Api.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Role>(entity =>
+            {
+                entity.Property(r => r.Name)
+                    .HasMaxLength(70)
+                    .IsRequired();
+
+                // Cấu hình UNIQUE
+                entity.HasIndex(r => r.Name)
+                    .IsUnique();
+            });
+            
             builder.Entity<Collection>(entity =>
             {
                 entity.HasOne(c => c.User)
@@ -73,11 +84,12 @@ namespace ImageStoreBase.Api.Data
 
             builder.Entity<Permission>(entity =>
             {
-                entity.HasKey(p => new { p.RoleId, p.FunctionId, p.CommandId });
+                entity.HasKey(p => new { p.RoleName, p.FunctionId, p.CommandId });
 
                 entity.HasOne(p => p.Role)
-                      .WithMany(r => r.Permissions)
-                      .HasForeignKey(p => p.RoleId);
+                      .WithMany(f => f.Permissions)
+                      .HasForeignKey(p => p.RoleName)   // Khóa ngoại trỏ tới User.UserCode
+                      .HasPrincipalKey(r => r.Name); // Name được dùng làm khóa chính logic
 
                 entity.HasOne(p => p.Function)
                       .WithMany(f => f.Permissions)
