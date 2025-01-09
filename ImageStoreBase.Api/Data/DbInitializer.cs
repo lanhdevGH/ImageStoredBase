@@ -34,9 +34,9 @@ namespace ImageStoreBase.Api.Data
 
             var roles = new[] 
             {
-                MyApplicationDefine.Customer,
-                MyApplicationDefine.User,
-                MyApplicationDefine.Admin
+                MyApplicationDefine.Role.Admin,
+                MyApplicationDefine.Role.User,
+                MyApplicationDefine.Role.Admin
             };
 
             foreach (var roleName in roles)
@@ -56,9 +56,9 @@ namespace ImageStoreBase.Api.Data
             var users = new[]
             {
                 new { Username = "admin", FirstName = "Quản trị", LastName = "1", 
-                      Email = "thanhlanhlit@gmail.com", Password = "Admin@123456", Role = MyApplicationDefine.Admin },
+                      Email = "thanhlanhlit@gmail.com", Password = "Admin@123456", Role = MyApplicationDefine.Role.Admin },
                 new { Username = "user", FirstName = "Người dùng", LastName = "1", 
-                      Email = "thanhlanh12a3@gmail.com", Password = "User@123456", Role = MyApplicationDefine.User }
+                      Email = "thanhlanh12a3@gmail.com", Password = "User@123456", Role = MyApplicationDefine.Role.User }
             };
 
             foreach (var userData in users)
@@ -88,14 +88,14 @@ namespace ImageStoreBase.Api.Data
             {
                 _context.Functions.AddRange(new List<Function>
                 {
-                    new Function {Id = nameof(MyApplicationDefine.DASHBOARD), Name = MyApplicationDefine.DASHBOARD, SortOrder = 1,Url = "/dashboard"  },
-                    new Function {Id = nameof(MyApplicationDefine.CONTENT), Name = MyApplicationDefine.CONTENT, SortOrder = 2,Url = "/content"  },
-                    new Function {Id = nameof(MyApplicationDefine.STATISTIC), Name = MyApplicationDefine.STATISTIC, SortOrder = 3,Url = "/statistic" },
-                    new Function {Id = nameof(MyApplicationDefine.SYSTEM), Name = MyApplicationDefine.SYSTEM, SortOrder = 4, Url = "/system" },
-                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_USER), Name = MyApplicationDefine.SYSTEM_USER, SortOrder = 1,Url = "/system/user" },
-                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_ROLE), Name = MyApplicationDefine.SYSTEM_ROLE, SortOrder = 2,Url = "/system/role" },
-                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_FUNCTION), Name = MyApplicationDefine.SYSTEM_FUNCTION, SortOrder = 3,Url = "/system/function" },
-                    new Function {Id = nameof(MyApplicationDefine.SYSTEM_PERMISSION), Name = MyApplicationDefine.SYSTEM_PERMISSION, SortOrder = 4,Url = "/system/permission" },
+                    new Function {Id = nameof(MyApplicationDefine.Function.DASHBOARD), Name = MyApplicationDefine.Function.DASHBOARD, SortOrder = 1,Url = "/dashboard"  },
+                    new Function {Id = nameof(MyApplicationDefine.Function.CONTENT), Name = MyApplicationDefine.Function.CONTENT, SortOrder = 2,Url = "/content"  },
+                    new Function {Id = nameof(MyApplicationDefine.Function.STATISTIC), Name = MyApplicationDefine.Function.STATISTIC, SortOrder = 3,Url = "/statistic" },
+                    new Function {Id = nameof(MyApplicationDefine.Function.SYSTEM), Name = MyApplicationDefine.Function.SYSTEM, SortOrder = 4, Url = "/system" },
+                    new Function {Id = nameof(MyApplicationDefine.Function.SYSTEM_USER), Name = MyApplicationDefine.Function.SYSTEM_USER, SortOrder = 1,Url = "/system/user" },
+                    new Function {Id = nameof(MyApplicationDefine.Function.SYSTEM_ROLE), Name = MyApplicationDefine.Function.SYSTEM_ROLE, SortOrder = 2,Url = "/system/role" },
+                    new Function {Id = nameof(MyApplicationDefine.Function.SYSTEM_FUNCTION), Name = MyApplicationDefine.Function.SYSTEM_FUNCTION, SortOrder = 3,Url = "/system/function" },
+                    new Function {Id = nameof(MyApplicationDefine.Function.SYSTEM_PERMISSION), Name = MyApplicationDefine.Function.SYSTEM_PERMISSION, SortOrder = 4,Url = "/system/permission" },
                 });
                 await _context.SaveChangesAsync();
             }
@@ -104,11 +104,11 @@ namespace ImageStoreBase.Api.Data
             {
                 _context.Commands.AddRange(new List<Command>()
                 {
-                    new Command(){Id = nameof(MyApplicationDefine.VIEW), Name = MyApplicationDefine.VIEW},
-                    new Command(){Id = nameof(MyApplicationDefine.CREATE), Name = MyApplicationDefine.CREATE},
-                    new Command(){Id = nameof(MyApplicationDefine.UPDATE), Name = MyApplicationDefine.UPDATE},
-                    new Command(){Id = nameof(MyApplicationDefine.DELETE), Name = MyApplicationDefine.DELETE},
-                    new Command(){Id = nameof(MyApplicationDefine.APPROVE), Name = MyApplicationDefine.APPROVE},
+                    new Command(){Id = nameof(MyApplicationDefine.Command.VIEW), Name = MyApplicationDefine.Command.VIEW},
+                    new Command(){Id = nameof(MyApplicationDefine.Command.CREATE), Name = MyApplicationDefine.Command.CREATE},
+                    new Command(){Id = nameof(MyApplicationDefine.Command.UPDATE), Name = MyApplicationDefine.Command.UPDATE},
+                    new Command(){Id = nameof(MyApplicationDefine.Command.DELETE), Name = MyApplicationDefine.Command.DELETE},
+                    new Command(){Id = nameof(MyApplicationDefine.Command.APPROVE), Name = MyApplicationDefine.Command.APPROVE},
                 });
             }
         }
@@ -123,27 +123,27 @@ namespace ImageStoreBase.Api.Data
                 {
                     var createAction = new CommandInFunction()
                     {
-                        CommandId = nameof(MyApplicationDefine.CREATE),
+                        CommandId = nameof(MyApplicationDefine.Command.CREATE),
                         FunctionId = function.Id
                     };
                     _context.CommandInFunctions.Add(createAction);
 
                     var updateAction = new CommandInFunction()
                     {
-                        CommandId = nameof(MyApplicationDefine.UPDATE),
+                        CommandId = nameof(MyApplicationDefine.Command.UPDATE),
                         FunctionId = function.Id
                     };
                     _context.CommandInFunctions.Add(updateAction);
                     var deleteAction = new CommandInFunction()
                     {
-                        CommandId = nameof(MyApplicationDefine.DELETE),
+                        CommandId = nameof(MyApplicationDefine.Command.DELETE),
                         FunctionId = function.Id
                     };
                     _context.CommandInFunctions.Add(deleteAction);
 
                     var viewAction = new CommandInFunction()
                     {
-                        CommandId = nameof(MyApplicationDefine.VIEW),
+                        CommandId = nameof(MyApplicationDefine.Command.VIEW),
                         FunctionId = function.Id
                     };
                     _context.CommandInFunctions.Add(viewAction);
@@ -155,15 +155,15 @@ namespace ImageStoreBase.Api.Data
         {
             if (!_context.Permissions.Any())
             {
-                var adminRole = await _roleManager.FindByNameAsync(MyApplicationDefine.Admin);
+                var adminRole = await _roleManager.FindByNameAsync(MyApplicationDefine.Role.Admin);
                 var functions = _context.Functions;
 
                 foreach (var function in functions)
                 {
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.CREATE) });
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.UPDATE) });
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.DELETE) });
-                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.VIEW) });
+                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.CREATE) });
+                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.UPDATE) });
+                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.DELETE) });
+                    _context.Permissions.Add(new Permission { RoleId = adminRole.Id, FunctionId = function.Id, CommandId = nameof(MyApplicationDefine.Command.VIEW) });
                 }
             }
         }
