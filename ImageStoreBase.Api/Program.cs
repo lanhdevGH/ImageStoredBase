@@ -28,7 +28,36 @@ builder.Host.UseSerilog(); // Đặt Serilog làm Logger chính
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+#region Config Swagger
+builder.Services.AddSwaggerGen(options =>
+{
+    // Cấu hình để hỗ trợ Bearer Authentication
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Nhập 'Bearer' [khoảng trắng] và token của bạn trong ô bên dưới.\n\nVí dụ: Bearer abc123"
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+});
+#endregion
 
 #region DBContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -142,8 +171,22 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(c =>
+    {
+        c.PreSerializeFilters.Add((document, request) =>
+        {
+            var paths = document.Paths.ToDictionary(item => item.Key.ToLowerInvariant(), item => item.Value);
+            document.Paths.Clear();
+            foreach (var pathItem in paths)
+            {
+                document.Paths.Add(pathItem.Key, pathItem.Value);
+            }
+        });
+    });
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "REST API V1");
+    });
 }
 
 app.UseHttpsRedirection();
