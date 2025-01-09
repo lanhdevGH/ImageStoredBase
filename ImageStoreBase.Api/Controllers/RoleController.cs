@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using ImageStoreBase.Api.Services;
-using ImageStoreBase.Api.DTOs.Roles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ImageStoreBase.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "Admin")]
     public class RoleController : ControllerBase
     {
         private readonly RoleService _roleService;

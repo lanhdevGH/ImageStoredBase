@@ -95,23 +95,17 @@ builder.Services.Configure<IdentityOptions>(options =>
 #endregion
 
 #region Authentication
-builder.Services.AddAuthentication(
-    options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["JwtSettings:Issuer"], // Định nghĩa trong appsettings.json
-            ValidAudience = builder.Configuration["JwtSettings:Audience"], // Định nghĩa trong appsettings.json
+            //ValidAudience = builder.Configuration["JwtSettings:Audience"], // Định nghĩa trong appsettings.json
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])) // Key bí mật
         };
 
@@ -143,12 +137,12 @@ builder.Services.AddAuthorization(options =>
 #endregion
 
 #region DI Services
+// Authorization
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<DbInitializer>();
 // CustomService
 builder.Services.AddScoped<RoleService>();
-// Authorization
 builder.Services.AddScoped<IAuthorizationHandler, ClaimRequirementHandle>();
 #endregion
 

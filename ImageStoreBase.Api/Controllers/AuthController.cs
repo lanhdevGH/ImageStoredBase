@@ -1,6 +1,5 @@
 ﻿using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -30,12 +29,16 @@ namespace ImageStoreBase.Api.Controllers
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
+                var userRoles = await _userManager.GetRolesAsync(user);
                 // Tạo token
-                var authClaims = new[]
+                var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
+
+                // Thêm claims từ danh sách roles
+                authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
                 var token = new JwtSecurityToken(
