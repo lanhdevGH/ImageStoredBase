@@ -118,7 +118,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy =>
-        policy.Requirements.Add(new ClaimRequirement(MyApplicationDefine.Function.SYSTEM, "CREATE")));
+        policy.Requirements.Add(new ClaimRequirement(nameof(MyApplicationDefine.Function.SYSTEM), nameof(MyApplicationDefine.Command.CREATE))));
 });
 
 #endregion

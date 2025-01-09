@@ -14,11 +14,13 @@ namespace ImageStoreBase.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<User> userManager, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _configuration = configuration;
         }
 
@@ -29,6 +31,7 @@ namespace ImageStoreBase.Api.Controllers
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
+                await _signInManager.SignInAsync(user, true);
                 var userRoles = await _userManager.GetRolesAsync(user);
                 // Tạo token
                 var authClaims = new List<Claim>
