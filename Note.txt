@@ -1,4 +1,4 @@
-Add-Migration InitialDB -outputdir Data/Migration
+Add-Migration InitialDB -outputdir Data/Migrations
 //
 Serilog package
 Serilog.AspNetCore: Gói này chủ yếu tích hợp Serilog với ASP.NET Core, dung lượng nhẹ (thường dưới 1MB).
