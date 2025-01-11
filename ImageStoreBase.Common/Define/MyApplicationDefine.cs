@@ -14,27 +14,26 @@
         #region Command
         public static class Command
         {
-            public const string VIEW = "Xem";
-            public const string CREATE = "Thêm";
-            public const string UPDATE = "Sửa";
-            public const string DELETE = "Xoá";
-            public const string APPROVE = "Duyệt";
+            public const string VIEW = nameof(VIEW);
+            public const string CREATE = nameof(CREATE);
+            public const string UPDATE = nameof(UPDATE);
+            public const string DELETE = nameof(DELETE);
+            public const string APPROVE = nameof(APPROVE);
         }
         #endregion
 
         #region Function
         public static class Function
         {
-            public const string DASHBOARD = "Trang chủ";
-            public const string CONTENT = "Nội dung";
-            public const string STATISTIC = "Thống kê";
-            public const string SYSTEM = "Hệ thống";
-            public const string SYSTEM_USER = "Người dùng";
-            public const string SYSTEM_ROLE = "Nhóm quyền";
-            public const string SYSTEM_FUNCTION = "Chức năng";
-            public const string SYSTEM_PERMISSION = "Quyền hạn";
+            public const string DASHBOARD = nameof(DASHBOARD);
+            public const string CONTENT = nameof(CONTENT);
+            public const string STATISTIC = nameof(STATISTIC);
+            public const string SYSTEM = nameof(SYSTEM);
+            public const string SYSTEM_USER = nameof(SYSTEM_USER);
+            public const string SYSTEM_ROLE = nameof(SYSTEM_ROLE);
+            public const string SYSTEM_FUNCTION = nameof(SYSTEM_FUNCTION);
+            public const string SYSTEM_PERMISSION = nameof(SYSTEM_PERMISSION);
         }
-        
         #endregion
     }
 }

@@ -1,16 +1,17 @@
 ﻿using ImageStoreBase.Api.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
 namespace ImageStoreBase.Api.Handles.Auth
 {
     public class ClaimRequirementHandle : AuthorizationHandler<ClaimRequirement>
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ClaimRequirementHandle(AppDbContext appDbContext)
+        public ClaimRequirementHandle(IServiceScopeFactory serviceScopeFactory)
         {
-            _dbContext = appDbContext;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ClaimRequirement requirement)
@@ -20,10 +21,15 @@ namespace ImageStoreBase.Api.Handles.Auth
                 return Task.CompletedTask;
             }
 
-            var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userRoles = context.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+            var userRoles = context.User.Claims
+                .Where(c => string.Equals(c.Type, nameof(ClaimTypes.Role), StringComparison.OrdinalIgnoreCase))
+                .Select(c => c.Value).ToList();
 
-            var hasPermission = _dbContext.Permissions
+            using IServiceScope scope = _serviceScopeFactory.CreateScope();
+            AppDbContext _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+
+            var hasPermission = _appDbContext.Permissions
                 .Any(rp =>
                     userRoles.Contains(rp.RoleName.ToString()) && // Convert Guid to string
                     rp.FunctionId == requirement.FunctionCode &&

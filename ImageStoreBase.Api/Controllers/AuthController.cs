@@ -1,4 +1,5 @@
 ﻿using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.Infrastructure;
 using ImageStoreBase.Api.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,13 @@ namespace ImageStoreBase.Api.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly IConfiguration _configuration;
+        private readonly TokenProvider _tokenProvider;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, TokenProvider tokenProvider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _configuration = configuration;
+            _tokenProvider = tokenProvider;
         }
 
         [HttpPost("login")]
@@ -31,32 +32,13 @@ namespace ImageStoreBase.Api.Controllers
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                await _signInManager.SignInAsync(user, true);
+                var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
+                //if (!loginResult.Succeeded)
+                //    return BadRequest("Mật khẩu không đúng");
                 var userRoles = await _userManager.GetRolesAsync(user);
-                // Tạo token
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                };
+                var token = await _tokenProvider.CreateUserTokenAsync(user, userRoles.ToList());
 
-                // Thêm claims từ danh sách roles
-                authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JwtSettings:Issuer"],
-                    audience: _configuration["JwtSettings:Audience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                return Ok(token);
             }
             return Unauthorized();
         }

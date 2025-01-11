@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using ImageStoreBase.Api.Services;
 using Microsoft.AspNetCore.Authorization;
-
 namespace ImageStoreBase.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "Admin")]
+    [Authorize(policy: "Admin")]
     public class RoleController : ControllerBase
     {
         private readonly RoleService _roleService;
