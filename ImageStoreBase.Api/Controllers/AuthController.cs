@@ -1,10 +1,10 @@
-﻿using ImageStoreBase.Api.Data.Entities;
+﻿using Azure.Core;
+using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.Infrastructure;
 using ImageStoreBase.Api.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -15,14 +15,14 @@ namespace ImageStoreBase.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly TokenProvider _tokenProvider;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, TokenProvider tokenProvider)
+        public AuthController(UserManager<User> userManager, TokenProvider tokenProvider, IConfiguration configuration)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _tokenProvider = tokenProvider;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -32,13 +32,18 @@ namespace ImageStoreBase.Api.Controllers
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
-                //if (!loginResult.Succeeded)
-                //    return BadRequest("Mật khẩu không đúng");
-                var userRoles = await _userManager.GetRolesAsync(user);
-                var token = await _tokenProvider.CreateUserTokenAsync(user, userRoles.ToList());
+                var token = await _tokenProvider.CreateUserTokenAsync(user);
+                var refreshToken = await _tokenProvider.CreateRefreshTokenAsync();
 
-                return Ok(token);
+                user.RefreshToken = refreshToken;
+                user.ExpiryRefreshToken = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("JwtSettings:RefreshTokenDurationInDay"));
+
+                await _userManager.UpdateAsync(user);
+                return Ok(new TokenApiModel
+                {
+                    Accesstoken = token,
+                    RefreshToken = refreshToken
+                });
             }
             return Unauthorized();
         }
@@ -63,6 +68,47 @@ namespace ImageStoreBase.Api.Controllers
                 return BadRequest(result.Errors);
 
             return Ok(new { message = "User registered successfully!" });
+        }
+
+        [HttpPost]
+        [Route("refresh-token")]
+        public async Task<IActionResult> RefreshToken(TokenApiModel tokenApiModel)
+        {
+            if (tokenApiModel is null)
+                return BadRequest("Invalid client request");
+            var principal = _tokenProvider.GetPrincipalFromExpiredToken(tokenApiModel.Accesstoken);
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null || user.RefreshToken != tokenApiModel.RefreshToken || user.ExpiryRefreshToken <= DateTime.UtcNow)
+                return Unauthorized("Invalid refresh token.");
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var newAccessToken = await _tokenProvider.CreateUserTokenAsync(user);
+            var newRefreshToken = await _tokenProvider.CreateRefreshTokenAsync();
+
+            user.RefreshToken = newRefreshToken;
+            user.ExpiryRefreshToken = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("JwtSettings:RefreshTokenDurationInDay"));
+
+
+            await _userManager.UpdateAsync(user);
+            return Ok(new TokenApiModel()
+            {
+                Accesstoken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
+        }
+
+        [HttpPost, Authorize]
+        [Route("revoke-token")]
+        public async Task<IActionResult> Revoke()
+        {
+            var username = User.Identity.Name;
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null) return BadRequest();
+            user.RefreshToken = null;
+            await _userManager.UpdateAsync(user);
+            return NoContent();
         }
     }
 }

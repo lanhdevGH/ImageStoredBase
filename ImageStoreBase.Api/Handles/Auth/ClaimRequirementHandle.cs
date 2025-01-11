@@ -21,6 +21,18 @@ namespace ImageStoreBase.Api.Handles.Auth
                 return Task.CompletedTask;
             }
 
+            var expirationClaim = context.User.Claims.FirstOrDefault(c => c.Type == "exp");
+            if (expirationClaim == null || !long.TryParse(expirationClaim.Value, out var expTimestamp))
+            {
+                return Task.CompletedTask; // Token không hợp lệ
+            }
+
+            var expirationDate = DateTimeOffset.FromUnixTimeSeconds(expTimestamp).UtcDateTime;
+            if (DateTime.UtcNow > expirationDate)
+            {
+                return Task.CompletedTask; // Token đã hết hạn
+            }
+
             var userRoles = context.User.Claims
                 .Where(c => string.Equals(c.Type, nameof(ClaimTypes.Role), StringComparison.OrdinalIgnoreCase))
                 .Select(c => c.Value).ToList();

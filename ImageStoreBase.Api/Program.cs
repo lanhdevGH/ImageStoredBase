@@ -35,7 +35,7 @@ builder.Services.ConfigCors();
 
 #region DI Services
 builder.Services.AddSingleton<IAuthorizationHandler, ClaimRequirementHandle>();
-builder.Services.AddSingleton<TokenProvider>();
+builder.Services.AddScoped<TokenProvider>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<DbInitializer>();
 builder.Services.AddScoped<RoleService>();
