@@ -1,17 +1,12 @@
 using ImageStoreBase.Api.Configurations;
 using ImageStoreBase.Api.Data;
-using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.Extensions;
 using ImageStoreBase.Api.Handles.Auth;
 using ImageStoreBase.Api.Infrastructure;
 using ImageStoreBase.Api.Services;
-using ImageStoreBase.Common.Define;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ImageStoreBase.Api.Services.ImplementServices;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
@@ -20,10 +15,8 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console() // Ghi log ra console
                        //.WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day) // Ghi log vào file (mỗi ngày 1 file)
     .CreateLogger();
-
-
 builder.Host.UseSerilog(); // Đặt Serilog làm Logger chính
-
+//
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
@@ -34,11 +27,14 @@ builder.Services.ConfigAuthorization();
 builder.Services.ConfigCors();
 
 #region DI Services
-builder.Services.AddSingleton<IAuthorizationHandler, ClaimRequirementHandle>();
 builder.Services.AddScoped<TokenProvider>();
-builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<DbInitializer>();
-builder.Services.AddScoped<RoleService>();
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddSingleton<IAuthorizationHandler, ClaimRequirementHandle>();
+//
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICollectionService, CollectionService>();
 #endregion
 
 
@@ -73,6 +69,8 @@ app.MapControllers();
 
 app.UseCors("AllowAll");
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 #region SeedingData
 using (var scope = app.Services.CreateScope())
 {
@@ -81,7 +79,7 @@ using (var scope = app.Services.CreateScope())
     {
         Log.Information("Seeding data...");
         var dbInitializer = services.GetService<DbInitializer>();
-        dbInitializer.SeedingData().Wait();
+        dbInitializer?.SeedingData().Wait();
         Log.Information("Done Seeding data");
     }
     catch (Exception ex)
