@@ -16,9 +16,9 @@ namespace ImageStoreBase.Api.Data.Entities
         [Required]
         public string LastName { get; set; }
 
-        public string RefreshToken { get; set; }
+        public string? RefreshToken { get; set; }
 
-        public DateTime ExpiryRefreshToken { get; set; }
+        public DateTime? ExpiryRefreshToken { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
