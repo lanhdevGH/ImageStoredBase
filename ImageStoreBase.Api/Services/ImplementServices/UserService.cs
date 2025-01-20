@@ -78,7 +78,18 @@ namespace ImageStoreBase.Api.Services.ImplementServices
         public async Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User id not found");
+            }
+
             var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+            {
+                // Ném exception chung nếu lỗi không phải do mật khẩu
+                var allErrors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new ChangePasswordException($"Change password user failed: {allErrors}");
+            }
             return result.Succeeded;
         }
 

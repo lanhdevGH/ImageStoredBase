@@ -34,6 +34,7 @@ builder.Services.AddSingleton<IAuthorizationHandler, ClaimRequirementHandle>();
 //
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFunctionService, FunctionService>();
 builder.Services.AddScoped<ICollectionService, CollectionService>();
 #endregion
 

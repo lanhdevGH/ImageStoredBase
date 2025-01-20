@@ -32,7 +32,7 @@ namespace ImageStoreBase.Api.Extensions
             context.Response.ContentType = "application/json";
             // Thiết lập mã trạng thái mặc định
             var statusCode = (int)HttpStatusCode.InternalServerError;
-            string message = "Internal Server Error from the custom middleware.";
+            string message = "Internal Server Error";
             // Xử lý các loại exception khác nhau
             switch (exception)
             {
@@ -61,7 +61,7 @@ namespace ImageStoreBase.Api.Extensions
                     message = ex.Message;
                     break;
                 default:
-                    message = "Internal Server Error from the custom middleware.";
+                    message = "Internal Server Error";
                     break;
             }
 
