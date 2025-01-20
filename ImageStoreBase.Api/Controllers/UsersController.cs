@@ -72,16 +72,15 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPost("change-password/{userId}")]
-        public async Task<IActionResult> ChangePassword([FromRoute] string userId,
+        public async Task<IActionResult> ChangePassword(string userId,
                                                         [FromBody] ChangePasswordRequestDTO changePasswordRequest)
         {
+            var a = userId;
             var result = await _userService.ChangePasswordAsync(userId,
                                                                 changePasswordRequest.CurrentPassword,
                                                                 changePasswordRequest.NewPassword);
             if (!result) return NotFound();
             return NoContent();
         }
-
-
     }
 }

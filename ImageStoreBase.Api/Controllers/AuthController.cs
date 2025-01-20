@@ -30,8 +30,13 @@ namespace ImageStoreBase.Api.Controllers
         {
             // Tìm user từ username
             var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            if (user != null)
             {
+                // Kiểm tra mật khẩu
+                var isCheckPassword = await _userManager.CheckPasswordAsync(user, model.Password);
+                if (!isCheckPassword) return BadRequest("Invalid password");
+
+                // Tạo token
                 var token = await _tokenProvider.CreateUserTokenAsync(user);
                 var refreshToken = await _tokenProvider.CreateRefreshTokenAsync();
 
@@ -45,9 +50,10 @@ namespace ImageStoreBase.Api.Controllers
                     RefreshToken = refreshToken
                 });
             }
-            return Unauthorized();
+            return NotFound($"User name {model.Username} is not contain");
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {

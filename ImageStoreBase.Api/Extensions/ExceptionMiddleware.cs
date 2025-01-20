@@ -56,6 +56,10 @@ namespace ImageStoreBase.Api.Extensions
                     statusCode = (int)HttpStatusCode.BadRequest;
                     message = ex.Message;
                     break;
+                case ChangePasswordException ex:
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    message = ex.Message;
+                    break;
                 default:
                     message = "Internal Server Error from the custom middleware.";
                     break;
