@@ -1,6 +1,6 @@
 ﻿using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.DTOs.CollectionDTOs;
-using ImageStoreBase.Api.ViewModels;
+using ImageStoreBase.Api.DTOs.GenericDTO;
 
 namespace ImageStoreBase.Api.Services
 {

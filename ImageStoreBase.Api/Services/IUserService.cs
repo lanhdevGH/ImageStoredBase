@@ -1,6 +1,6 @@
 ﻿using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.DTOs.GenericDTO;
 using ImageStoreBase.Api.DTOs.UserDTOs;
-using ImageStoreBase.Api.ViewModels;
 using Microsoft.AspNetCore.Identity;
 
 namespace ImageStoreBase.Api.Services

@@ -1,7 +1,7 @@
 ﻿using Azure.Core;
 using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.DTOs.GenericDTO;
 using ImageStoreBase.Api.Infrastructure;
-using ImageStoreBase.Api.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

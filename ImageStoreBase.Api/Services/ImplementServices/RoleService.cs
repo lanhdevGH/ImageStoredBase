@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.DTOs.GenericDTO;
 using ImageStoreBase.Api.DTOs.RoleDTOs;
-using ImageStoreBase.Api.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

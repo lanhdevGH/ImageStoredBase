@@ -1,6 +1,5 @@
-﻿using ImageStoreBase.Api.MyExceptions;
-using ImageStoreBase.Api.ViewModels;
-using Microsoft.AspNetCore.Http;
+﻿using ImageStoreBase.Api.DTOs.GenericDTO;
+using ImageStoreBase.Api.MyExceptions;
 using System.Net;
 
 namespace ImageStoreBase.Api.Extensions

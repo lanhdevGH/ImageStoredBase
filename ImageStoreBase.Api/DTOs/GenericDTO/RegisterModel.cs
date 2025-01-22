@@ -1,4 +1,4 @@
-﻿namespace ImageStoreBase.Api.ViewModels
+﻿namespace ImageStoreBase.Api.DTOs.GenericDTO
 {
     public class RegisterModel
     {

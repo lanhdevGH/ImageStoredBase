@@ -2,7 +2,7 @@
 using ImageStoreBase.Api.Data;
 using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.DTOs.CollectionDTOs;
-using ImageStoreBase.Api.ViewModels;
+using ImageStoreBase.Api.DTOs.GenericDTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImageStoreBase.Api.Services.ImplementServices
