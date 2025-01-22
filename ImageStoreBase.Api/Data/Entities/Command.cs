@@ -24,8 +24,8 @@ namespace ImageStoreBase.Api.Data.Entities
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<CommandInFunction> CommandInFunctions { get; set; } = new List<CommandInFunction>();
+        public virtual ICollection<CommandInFunction> CommandInFunctions { get; set; } = new List<CommandInFunction>();
 
-        public ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+        public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
     }
 }

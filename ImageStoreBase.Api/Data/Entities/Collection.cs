@@ -27,7 +27,7 @@ namespace ImageStoreBase.Api.Data.Entities
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         [ForeignKey("UserId")]
-        public User User { get; set; }
-        public ICollection<Album> Albums { get; set; } = new List<Album>();
+        public virtual User User { get; set; }
+        public virtual ICollection<Album> Albums { get; set; } = new List<Album>();
     }
 }

@@ -26,6 +26,6 @@ namespace ImageStoreBase.Api.Data.Entities
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<Collection> Collections { get; set; } = new List<Collection>();
+        public virtual ICollection<Collection> Collections { get; set; } = new List<Collection>();
     }
 }

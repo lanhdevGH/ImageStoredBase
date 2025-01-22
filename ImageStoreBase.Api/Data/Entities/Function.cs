@@ -30,9 +30,9 @@ namespace ImageStoreBase.Api.Data.Entities
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public Function? FunctionParent { get; set; } = null;
-        public ICollection<Function> ChildFunctions { get; set; } = new List<Function>();
-        public ICollection<Permission> Permissions { get; set; } = new List<Permission>();
-        public ICollection<CommandInFunction> CommandInFunctions { get; set; } = new List<CommandInFunction>();
+        public virtual Function? FunctionParent { get; set; } = null;
+        public virtual ICollection<Function> ChildFunctions { get; set; } = new List<Function>();
+        public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+        public virtual ICollection<CommandInFunction> CommandInFunctions { get; set; } = new List<CommandInFunction>();
     }
 }

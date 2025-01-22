@@ -21,6 +21,6 @@ namespace ImageStoreBase.Api.Data.Entities
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<ImageInAlbum> ImageInAlbums { get; set; } = new List<ImageInAlbum>();
+        public virtual ICollection<ImageInAlbum> ImageInAlbums { get; set; } = new List<ImageInAlbum>();
     }
 }

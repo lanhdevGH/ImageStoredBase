@@ -22,9 +22,9 @@ namespace ImageStoreBase.Api.Data.Entities
         public string? CustomerNotes { get; set; }
 
         [ForeignKey("AlbumId")]
-        public Album Album { get; set; }
+        public virtual Album Album { get; set; }
         
         [ForeignKey("ImageId")]
-        public Image Image { get; set; }
+        public virtual Image Image { get; set; }
     }
 }

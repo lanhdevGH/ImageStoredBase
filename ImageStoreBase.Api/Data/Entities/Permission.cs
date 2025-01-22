@@ -18,9 +18,9 @@ namespace ImageStoreBase.Api.Data.Entities
         [MaxLength(70)]
         public string CommandId { get; set; }
 
-        public Role Role { get; set; }
+        public virtual Role Role { get; set; }
         
-        public Function Function { get; set; }
+        public virtual Function Function { get; set; }
         
         public Command Command { get; set; }
     }

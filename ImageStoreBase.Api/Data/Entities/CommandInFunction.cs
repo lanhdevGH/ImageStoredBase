@@ -15,9 +15,9 @@ namespace ImageStoreBase.Api.Data.Entities
         public string FunctionId { get; set; }
 
         [ForeignKey("CommandId")]
-        public Command Command { get; set; }
+        public virtual Command Command { get; set; }
         
         [ForeignKey("FunctionId")]
-        public Function Function { get; set; }
+        public virtual Function Function { get; set; }
     }
 }
