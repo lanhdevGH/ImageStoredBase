@@ -3,10 +3,7 @@ using ImageStoreBase.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 namespace ImageStoreBase.Api.Controllers
 {
-
-    [ApiController]
-    [Route("api/[controller]")]
-    public class RolesController : ControllerBase
+    public class RolesController : BaseController
     {
         private readonly IRoleService _roleService;
 

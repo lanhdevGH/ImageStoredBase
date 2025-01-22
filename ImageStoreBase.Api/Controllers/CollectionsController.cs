@@ -4,10 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImageStoreBase.Api.Controllers
 {
-
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CollectionsController : ControllerBase
+    public class CollectionsController : BaseController
     {
         private readonly ICollectionService _collectionService;
 

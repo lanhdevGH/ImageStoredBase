@@ -1,14 +1,10 @@
 ﻿using ImageStoreBase.Api.DTOs.UserDTOs;
 using ImageStoreBase.Api.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImageStoreBase.Api.Controllers
 {
-
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
         private readonly IUserService _userService;
 
@@ -22,7 +18,7 @@ namespace ImageStoreBase.Api.Controllers
         {
             if (pageNumber <= 0 || pageSize <= 0)
             {
-                return BadRequest("Page number and page size must be greater than zero.");
+                return BadRequest("Page number and page size must be greaBter than zero.");
             }
 
             var pagedResult = await _userService.GetPagedAsync(pageNumber, pageSize);

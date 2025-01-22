@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImageStoreBase.Api.Controllers
 {
-
-    [ApiController]
-    [Route("api/[controller]")]
-    public class FunctionsController : ControllerBase
+    public class FunctionsController : BaseController
     {
         private readonly IFunctionService _functionService;
 

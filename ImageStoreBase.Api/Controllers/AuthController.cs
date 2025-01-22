@@ -10,9 +10,7 @@ using System.Text;
 
 namespace ImageStoreBase.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
         private readonly UserManager<User> _userManager;
         private readonly TokenProvider _tokenProvider;
