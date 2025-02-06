@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.DTOs.CollectionDTOs;
+using ImageStoreBase.Api.DTOs.CommandDTO;
 using ImageStoreBase.Api.DTOs.FunctionDTOs;
 using ImageStoreBase.Api.DTOs.RoleDTOs;
 using ImageStoreBase.Api.DTOs.Roles;
@@ -14,6 +15,23 @@ namespace ImageStoreBase.Api.DTOs
         {
             // Map từ Entity sang DTO
             CreateMap<Role, RoleResponse>();
+            CreateMap<Command, CommandResponseDTO>();
+            CreateMap<Function, FunctionResponseDTO>()
+                .ForMember(dest => dest.ParentName, otps => otps.MapFrom(src => src.FunctionParent.Name))
+                .ForMember(dest => dest.ChildFunctions, opt => opt.Ignore())
+                .AfterMap((src, dest, rc) =>
+                {
+                    if (src.ChildFunctions != null)
+                    {
+                        foreach (var item in src.ChildFunctions)
+                        {
+                            if (item != src) // Prevent circular reference
+                            {
+                                dest.ChildFunctions.Add(rc.Mapper.Map<FunctionResponseDTO>(item));
+                            }
+                        }
+                    }
+                });
 
             // Map ngược từ DTO sang Entity
             CreateMap<UserCreateRequestDTO, User>();

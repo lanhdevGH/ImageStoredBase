@@ -1,6 +1,8 @@
-﻿using ImageStoreBase.Api.DTOs.FunctionDTOs;
+﻿using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.DTOs.FunctionDTOs;
+using ImageStoreBase.Api.Filters;
+using ImageStoreBase.Api.FluentValidator;
 using ImageStoreBase.Api.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImageStoreBase.Api.Controllers
@@ -42,20 +44,22 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] FunctionCreateRequestDTO function)
+        [ValidationEntityFilter<FunctionCreateRequestDTO,FunctionCreateRequestDTOValidator>("entity")]
+        [ValidationContainedEntityFilter<FunctionCreateRequestDTO,Function, string>("entity")]
+        public async Task<IActionResult> Create([FromBody] FunctionCreateRequestDTO entity)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var id = await _functionService.CreateAsync(function);
-            return CreatedAtAction(nameof(GetById), new { id }, function);
+            var id = await _functionService.CreateAsync(entity);
+            return CreatedAtAction(nameof(GetById), new { id }, entity);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] FunctionUpdateRequestDTO function)
+        public async Task<IActionResult> Update(string id, [FromBody] FunctionUpdateRequestDTO entity)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await _functionService.UpdateAsync(id, function);
+            var result = await _functionService.UpdateAsync(id, entity);
             if (!result) return NotFound();
             return NoContent();
         }
@@ -65,6 +69,32 @@ namespace ImageStoreBase.Api.Controllers
         {
             var result = await _functionService.DeleteAsync(id);
             if (!result) return NotFound();
+            return NoContent();
+        }
+
+        [HttpGet("{funcId}/commands")]
+        public async Task<IActionResult> GetCommandInFunction(string funcId)
+        {
+            var commands = await _functionService.GetCommandInFunction(funcId);
+            return Ok(commands);
+        }
+
+        [HttpPost("{funcId}/add-commands")]
+        //[ValidationContainedEntityFilter<Function, string>("funcId")]
+        [ValidationContainedEntityFilter<CommandInFunction, string>("commandIds")]
+        public async Task<IActionResult> AddCommands(string funcId, [FromBody] IEnumerable<string> commandIds)
+        {
+            if (commandIds == null || !commandIds.Any())
+                return BadRequest("ListCommandIds không được để trống.");
+            var result = await _functionService.AddCommandsToFunction(funcId, commandIds);
+            return NoContent();
+        }
+
+        [HttpDelete("{funcId}/remove-command/{commandId}")]
+        [ValidationContainedEntityFilter<Function, string>("funcId")]
+        public async Task<IActionResult> RemoveCommand(string funcId, string commandId)
+        {
+            var result = await _functionService.RemoveCommandInFunction(funcId, commandId);
             return NoContent();
         }
     }

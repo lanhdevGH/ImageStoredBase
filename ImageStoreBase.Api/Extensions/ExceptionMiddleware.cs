@@ -1,5 +1,6 @@
 ﻿using ImageStoreBase.Api.DTOs.GenericDTO;
 using ImageStoreBase.Api.MyExceptions;
+using Serilog;
 using System.Net;
 
 namespace ImageStoreBase.Api.Extensions
@@ -63,7 +64,7 @@ namespace ImageStoreBase.Api.Extensions
                     message = "Internal Server Error";
                     break;
             }
-
+            Console.WriteLine(exception.Message);
             // Thiết lập mã trạng thái và trả về response
             context.Response.StatusCode = statusCode;
             await context.Response.WriteAsync(new ExceptionModel()

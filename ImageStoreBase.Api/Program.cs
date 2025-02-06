@@ -1,6 +1,7 @@
 using ImageStoreBase.Api.Configurations;
 using ImageStoreBase.Api.Data;
 using ImageStoreBase.Api.Extensions;
+using ImageStoreBase.Api.Filters;
 using ImageStoreBase.Api.Handles.Auth;
 using ImageStoreBase.Api.Infrastructure;
 using ImageStoreBase.Api.Services;
@@ -17,7 +18,11 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog(); // Đặt Serilog làm Logger chính
 //
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigDbContext(builder.Configuration);
@@ -36,6 +41,11 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFunctionService, FunctionService>();
 builder.Services.AddScoped<ICollectionService, CollectionService>();
+builder.Services.AddScoped<ICommandService, CommandService>();
+#endregion
+
+#region DI Filters
+builder.Services.AddScoped(typeof(ValidationEntityFilter<,>));
 #endregion
 
 

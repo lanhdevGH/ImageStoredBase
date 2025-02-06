@@ -4,6 +4,7 @@ using ImageStoreBase.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageStoreBase.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250123023820_UpdateDB2")]
+    partial class UpdateDB2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasIndex("CollectionId");
 
-                    b.ToTable("Albums", (string)null);
+                    b.ToTable("Albums");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Collection", b =>
@@ -83,7 +86,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Collections", (string)null);
+                    b.ToTable("Collections");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Command", b =>
@@ -109,7 +112,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Commands", (string)null);
+                    b.ToTable("Commands");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.CommandInFunction", b =>
@@ -126,7 +129,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasIndex("FunctionId");
 
-                    b.ToTable("CommandInFunctions", (string)null);
+                    b.ToTable("CommandInFunctions");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Function", b =>
@@ -165,7 +168,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Functions", (string)null);
+                    b.ToTable("Functions");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Image", b =>
@@ -193,7 +196,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.ImageInAlbum", b =>
@@ -221,7 +224,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("ImageInAlbums", (string)null);
+                    b.ToTable("ImageInAlbums");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Permission", b =>
@@ -244,7 +247,7 @@ namespace ImageStoreBase.Api.Data.Migrations
 
                     b.HasIndex("FunctionId");
 
-                    b.ToTable("Permissions", (string)null);
+                    b.ToTable("Permissions");
                 });
 
             modelBuilder.Entity("ImageStoreBase.Api.Data.Entities.Role", b =>

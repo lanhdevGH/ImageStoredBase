@@ -66,6 +66,7 @@ namespace ImageStoreBase.Api.Data
                 entity.HasOne(f => f.FunctionParent)
                       .WithMany(f => f.ChildFunctions)
                       .HasForeignKey(f => f.ParentId)
+                      .OnDelete(DeleteBehavior.SetNull)
                       .IsRequired(false);
             });
 

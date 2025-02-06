@@ -10,10 +10,10 @@ namespace ImageStoreBase.Api.DTOs.FunctionDTOs
 
         [Required]
         [MaxLength(200)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [MaxLength(70)]
-        public string? ParentId { get; set; }
+        public string ParentId { get; set; } = string.Empty;
 
         [Required]
         public int SortOrder { get; set; }
@@ -21,6 +21,6 @@ namespace ImageStoreBase.Api.DTOs.FunctionDTOs
         public string Url { get; set; } = string.Empty;
 
         [MaxLength(500)]
-        public string? Description { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 }
