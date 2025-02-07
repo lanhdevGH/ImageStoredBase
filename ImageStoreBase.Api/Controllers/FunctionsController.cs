@@ -44,8 +44,8 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPost]
-        [ValidationEntityFilter<FunctionCreateRequestDTO,FunctionCreateRequestDTOValidator>("entity")]
-        [ValidationContainedEntityFilter<FunctionCreateRequestDTO,Function, string>("entity")]
+        [FluentValidationEntityFilter<FunctionCreateRequestDTO,FunctionCreateRequestDTOValidator>("entity")]
+        [ValidateEntityNotExistsFilter<Function, string>("entity")]
         public async Task<IActionResult> Create([FromBody] FunctionCreateRequestDTO entity)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -55,6 +55,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [ValidateEntityExistsFilter<Function, string>("id")]
         public async Task<IActionResult> Update(string id, [FromBody] FunctionUpdateRequestDTO entity)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -65,6 +66,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ValidateEntityExistsFilter<Function, string>("id")]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _functionService.DeleteAsync(id);
@@ -80,8 +82,8 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPost("{funcId}/add-commands")]
-        //[ValidationContainedEntityFilter<Function, string>("funcId")]
-        [ValidationContainedEntityFilter<CommandInFunction, string>("commandIds")]
+        [ValidateEntityExistsFilter<Function, string>("funcId")]
+        [ValidateEntityNotExistsFilter<CommandInFunction, string>("commandIds", nameof(CommandInFunction.CommandId))]
         public async Task<IActionResult> AddCommands(string funcId, [FromBody] IEnumerable<string> commandIds)
         {
             if (commandIds == null || !commandIds.Any())
@@ -91,7 +93,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpDelete("{funcId}/remove-command/{commandId}")]
-        [ValidationContainedEntityFilter<Function, string>("funcId")]
+        [ValidateEntityExistsFilter<Function, string>("funcId")]
         public async Task<IActionResult> RemoveCommand(string funcId, string commandId)
         {
             var result = await _functionService.RemoveCommandInFunction(funcId, commandId);

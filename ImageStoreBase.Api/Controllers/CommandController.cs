@@ -46,7 +46,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPost]
-        [ServiceFilter(typeof(ValidationEntityFilter<CommandCreateRequestDTO, CommandCreateRequestDTOValidator>))]
+        [ServiceFilter(typeof(FluentValidationEntityFilter<CommandCreateRequestDTO, CommandCreateRequestDTOValidator>))]
         public async Task<IActionResult> Create([FromBody] CommandCreateRequestDTO entity)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

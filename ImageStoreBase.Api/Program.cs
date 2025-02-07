@@ -45,7 +45,7 @@ builder.Services.AddScoped<ICommandService, CommandService>();
 #endregion
 
 #region DI Filters
-builder.Services.AddScoped(typeof(ValidationEntityFilter<,>));
+builder.Services.AddScoped(typeof(FluentValidationEntityFilter<,>));
 #endregion
 
 

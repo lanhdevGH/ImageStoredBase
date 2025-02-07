@@ -1,6 +1,5 @@
 ﻿using ImageStoreBase.Api.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
 namespace ImageStoreBase.Api.Handles.Auth
@@ -16,7 +15,7 @@ namespace ImageStoreBase.Api.Handles.Auth
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ClaimRequirement requirement)
         {
-            if (!context.User.Identity.IsAuthenticated)
+            if (context.User?.Identity?.IsAuthenticated != true)
             {
                 return Task.CompletedTask;
             }
@@ -39,7 +38,6 @@ namespace ImageStoreBase.Api.Handles.Auth
 
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
             AppDbContext _appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
 
             var hasPermission = _appDbContext.Permissions
                 .Any(rp =>
