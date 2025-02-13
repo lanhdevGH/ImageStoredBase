@@ -3,6 +3,7 @@ using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.DTOs.CollectionDTOs;
 using ImageStoreBase.Api.DTOs.CommandDTO;
 using ImageStoreBase.Api.DTOs.FunctionDTOs;
+using ImageStoreBase.Api.DTOs.PermissionDTO;
 using ImageStoreBase.Api.DTOs.RoleDTOs;
 using ImageStoreBase.Api.DTOs.Roles;
 using ImageStoreBase.Api.DTOs.UserDTOs;
@@ -34,6 +35,7 @@ namespace ImageStoreBase.Api.DTOs
                 });
 
             // Map ngược từ DTO sang Entity
+            CreateMap<PermissionVMDTO, Permission>();
             CreateMap<UserCreateRequestDTO, User>();
             CreateMap<UserUpdateRequestDTO, User>();
             CreateMap<RoleCreateRequestDTO, Role>();

@@ -42,6 +42,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFunctionService, FunctionService>();
 builder.Services.AddScoped<ICollectionService, CollectionService>();
 builder.Services.AddScoped<ICommandService, CommandService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 #endregion
 
 #region DI Filters
