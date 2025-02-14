@@ -5,9 +5,9 @@ namespace ImageStoreBase.Api.Services
 {
     public interface IPermissionService
     {
-        Task<IEnumerable<PermissionScreenResponseDTO>> GetCommandViewsAsync();
-        Task<IEnumerable<PermissionVMDTO>> GetPermissionByRole(string roleName);
+        Task<List<PermissionScreenResponseDTO>> GetCommandViewsAsync();
+        Task<List<PermissionVMDTO>> GetPermissionByRole(string roleName);
         Task<string> UpdatePermissionByRole(string roleName, IEnumerable<PermissionVMDTO> permissions);
-        Task<IEnumerable<FunctionResponseDTO>> GetPermissionByUser(string userId);
+        Task<List<FunctionResponseDTO>> GetPermissionByUser(string userId);
     }
 }

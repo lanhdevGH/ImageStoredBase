@@ -7,9 +7,9 @@ namespace ImageStoreBase.Api.Services
 
     public interface ICommandService
     {
-        Task<PagedResult<Command>> GetPagedAsync(int pageNumber, int pageSize);
-        Task<IEnumerable<Command>> GetAllAsync();
-        Task<Command> GetByIdAsync(string id);
+        Task<PagedResult<CommandResponseDTO>> GetPagedAsync(int pageNumber, int pageSize);
+        Task<List<CommandResponseDTO>> GetAllAsync();
+        Task<CommandResponseDTO?> GetByIdAsync(string id);
         Task<string> CreateAsync(CommandCreateRequestDTO entity);
         Task<bool> UpdateAsync(string id, CommandUpdateRequestDTO entity);
         Task<bool> DeleteAsync(string id);

@@ -2,6 +2,7 @@
 using ImageStoreBase.Api.Data;
 using ImageStoreBase.Api.Data.Entities;
 using ImageStoreBase.Api.DTOs.CollectionDTOs;
+using ImageStoreBase.Api.DTOs.FunctionDTOs;
 using ImageStoreBase.Api.DTOs.GenericDTO;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<Collection>> GetPagedAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<CollectionResponseDTO>> GetPagedAsync(int pageNumber, int pageSize)
         {
             var query = _context.Collections.AsQueryable();
 
@@ -28,9 +29,10 @@ namespace ImageStoreBase.Api.Services.ImplementServices
                 .OrderByDescending(p => p.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Select(p => _mapper.Map<CollectionResponseDTO>(p))
                 .ToListAsync();
 
-            return new PagedResult<Collection>
+            return new PagedResult<CollectionResponseDTO>
             {
                 Items = items,
                 TotalItems = totalItems,
@@ -39,44 +41,46 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             };
         }
 
-        public async Task<IEnumerable<Collection>> GetAllAsync()
+        public async Task<List<CollectionResponseDTO>> GetAllAsync()
         {
-            return await _context.Collections.ToListAsync();
+            return await _context.Collections.Select(p => _mapper.Map<CollectionResponseDTO>(p)).ToListAsync();
         }
 
-        public async Task<Collection> GetByIdAsync(string id)
+        public async Task<CollectionResponseDTO?> GetByIdAsync(string id)
         {
-            var collection = await _context.Collections.FindAsync(id);
-            return collection ?? throw new KeyNotFoundException("Collection not found");
+            var entityVal = await _context.Collections.FindAsync(id);
+            if (entityVal == null) return null;
+
+            var result = _mapper.Map<CollectionResponseDTO>(entityVal);
+            return result;
         }
 
-        public async Task<string> CreateAsync(CollectionCreateRequestDTO collectionCreateDTO)
+        public async Task<string> CreateAsync(CollectionCreateRequestDTO entityValCreateDTO)
         {
-            var newCollection = _mapper.Map<Collection>(collectionCreateDTO);
-            newCollection.Id = Guid.NewGuid();
-            await _context.Collections.AddAsync(newCollection);
+            var newFunction = _mapper.Map<Collection>(entityValCreateDTO);
+            await _context.Collections.AddAsync(newFunction);
             await _context.SaveChangesAsync();
-            return newCollection.Id.ToString();
+            return newFunction.Id.ToString();
         }
 
-        public async Task<bool> UpdateAsync(string id, CollectionUpdateRequestDTO collectionUpdateDTO)
+        public async Task<bool> UpdateAsync(string id, CollectionUpdateRequestDTO entityValUpdateDTO)
         {
-            var existingCollection = await _context.Collections.FindAsync(id);
-            if (existingCollection == null) return false;
+            var existingFunction = await _context.Collections.FindAsync(id);
+            if (existingFunction == null) return false;
 
-            _mapper.Map(collectionUpdateDTO, existingCollection);
+            _mapper.Map(entityValUpdateDTO, existingFunction);
 
-            _context.Collections.Update(existingCollection);
+            _context.Collections.Update(existingFunction);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var collection = await _context.Collections.FindAsync(id);
-            if (collection == null) return false;
+            var entityVal = await _context.Collections.FindAsync(id);
+            if (entityVal == null) return false;
 
-            _context.Collections.Remove(collection);
+            _context.Collections.Remove(entityVal);
             await _context.SaveChangesAsync();
             return true;
         }

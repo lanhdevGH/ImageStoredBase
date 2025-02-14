@@ -1,6 +1,5 @@
 ﻿using ImageStoreBase.Api.DTOs.GenericDTO;
 using ImageStoreBase.Api.MyExceptions;
-using Serilog;
 using System.Net;
 
 namespace ImageStoreBase.Api.Extensions

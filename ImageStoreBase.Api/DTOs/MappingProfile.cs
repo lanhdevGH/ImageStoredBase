@@ -17,6 +17,8 @@ namespace ImageStoreBase.Api.DTOs
             // Map từ Entity sang DTO
             CreateMap<Role, RoleResponse>();
             CreateMap<Command, CommandResponseDTO>();
+            CreateMap<Collection, CollectionResponseDTO>();
+            CreateMap<User, UserResponseDTO>();
             CreateMap<Function, FunctionResponseDTO>()
                 .ForMember(dest => dest.ParentName, otps => otps.MapFrom(src => src.FunctionParent.Name))
                 .ForMember(dest => dest.ChildFunctions, opt => opt.Ignore())

@@ -1,4 +1,7 @@
-﻿using ImageStoreBase.Api.DTOs.CollectionDTOs;
+﻿using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.DTOs.CollectionDTOs;
+using ImageStoreBase.Api.Filters;
+using ImageStoreBase.Api.FluentValidator;
 using ImageStoreBase.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,15 +44,17 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CollectionCreateRequestDTO collection)
+        [FluentValidationEntityFilter<CollectionCreateRequestDTO, CollectionCreateRequestDTOValidator>("entity")]
+        public async Task<IActionResult> Create([FromBody] CollectionCreateRequestDTO entity)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var id = await _collectionService.CreateAsync(collection);
-            return CreatedAtAction(nameof(GetById), new { id }, collection);
+            var id = await _collectionService.CreateAsync(entity);
+            return CreatedAtAction(nameof(GetById), new { id }, entity);
         }
 
         [HttpPut("{id}")]
+        [ValidateEntityExistsFilter<Collection>("id")]
         public async Task<IActionResult> Update(string id, [FromBody] CollectionUpdateRequestDTO collection)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

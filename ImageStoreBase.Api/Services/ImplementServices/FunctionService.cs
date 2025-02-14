@@ -41,18 +41,15 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             };
         }
 
-        public async Task<IEnumerable<FunctionResponseDTO>> GetAllAsync()
+        public async Task<List<FunctionResponseDTO>> GetAllAsync()
         {
             return await _context.Functions.Select(p => _mapper.Map<FunctionResponseDTO>(p)).ToListAsync();
         }
 
-        public async Task<FunctionResponseDTO> GetByIdAsync(string id)
+        public async Task<FunctionResponseDTO?> GetByIdAsync(string id)
         {
             var entityVal = await _context.Functions.FindAsync(id);
-            if (entityVal == null)
-            {
-                throw new KeyNotFoundException("Function id not found");
-            }
+            if (entityVal == null) return null;
 
             var result = _mapper.Map<FunctionResponseDTO>(entityVal);
             return result;
@@ -63,7 +60,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             var newFunction = _mapper.Map<Function>(entityValCreateDTO);
             await _context.Functions.AddAsync(newFunction);
             await _context.SaveChangesAsync();
-            return newFunction.Id;
+            return newFunction.Id.ToString();
         }
 
         public async Task<bool> UpdateAsync(string id, FunctionUpdateRequestDTO entityValUpdateDTO)
@@ -88,7 +85,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return true;
         }
 
-        public async Task<IEnumerable<CommandResponseDTO>> GetCommandInFunction(string funcId)
+        public async Task<List<CommandResponseDTO>> GetCommandInFunction(string funcId)
         {
             var result = new List<CommandResponseDTO>();
             // Lấy thông tin function

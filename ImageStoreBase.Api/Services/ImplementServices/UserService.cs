@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ImageStoreBase.Api.Data;
 using ImageStoreBase.Api.Data.Entities;
+using ImageStoreBase.Api.DTOs.FunctionDTOs;
 using ImageStoreBase.Api.DTOs.GenericDTO;
 using ImageStoreBase.Api.DTOs.UserDTOs;
 using ImageStoreBase.Api.MyExceptions;
@@ -20,7 +21,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<User>> GetPagedAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<UserResponseDTO>> GetPagedAsync(int pageNumber, int pageSize)
         {
             var query = _userManager.Users.AsQueryable();
 
@@ -29,9 +30,10 @@ namespace ImageStoreBase.Api.Services.ImplementServices
                 .OrderByDescending(p => p.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Select(p => _mapper.Map<UserResponseDTO>(p))
                 .ToListAsync();
 
-            return new PagedResult<User>
+            return new PagedResult<UserResponseDTO>
             {
                 Items = items,
                 TotalItems = totalItems,
@@ -40,15 +42,18 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             };
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<List<UserResponseDTO>> GetAllAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            return await _userManager.Users.Select(p => _mapper.Map<UserResponseDTO>(p)).ToListAsync();
         }
 
-        public async Task<User> GetByIdAsync(string id)
+        public async Task<UserResponseDTO?> GetByIdAsync(string id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            return user ?? throw new KeyNotFoundException("User id not found");
+            var entityVal = await _userManager.FindByIdAsync(id);
+            if (entityVal == null) return null;
+
+            var result = _mapper.Map<UserResponseDTO>(entityVal);
+            return result;
         }
 
         public async Task<string> CreateAsync(UserCreateRequestDTO userCreateDTO)

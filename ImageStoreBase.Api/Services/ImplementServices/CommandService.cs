@@ -19,7 +19,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             _mapper = mapper;
         }
 
-        public async Task<PagedResult<Command>> GetPagedAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<CommandResponseDTO>> GetPagedAsync(int pageNumber, int pageSize)
         {
             var query = _context.Commands.AsQueryable();
 
@@ -28,9 +28,10 @@ namespace ImageStoreBase.Api.Services.ImplementServices
                 .OrderByDescending(p => p.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Select(p => _mapper.Map<CommandResponseDTO>(p))
                 .ToListAsync();
 
-            return new PagedResult<Command>
+            return new PagedResult<CommandResponseDTO>
             {
                 Items = items,
                 TotalItems = totalItems,
@@ -39,15 +40,18 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             };
         }
 
-        public async Task<IEnumerable<Command>> GetAllAsync()
+        public async Task<List<CommandResponseDTO>> GetAllAsync()
         {
-            return await _context.Commands.ToListAsync();
+            return await _context.Commands.Select(p => _mapper.Map<CommandResponseDTO>(p)).ToListAsync();
         }
 
-        public async Task<Command> GetByIdAsync(string id)
+        public async Task<CommandResponseDTO?> GetByIdAsync(string id)
         {
             var entityVal = await _context.Commands.FindAsync(id);
-            return entityVal ?? throw new KeyNotFoundException("Command id not found");
+            if (entityVal == null) return null;
+
+            var result = _mapper.Map<CommandResponseDTO>(entityVal);
+            return result;
         }
 
         public async Task<string> CreateAsync(CommandCreateRequestDTO entityValCreateDTO)
@@ -55,7 +59,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             var newCommand = _mapper.Map<Command>(entityValCreateDTO);
             await _context.Commands.AddAsync(newCommand);
             await _context.SaveChangesAsync();
-            return newCommand.Id;
+            return newCommand.Id.ToString();
         }
 
         public async Task<bool> UpdateAsync(string id, CommandUpdateRequestDTO entityValUpdateDTO)

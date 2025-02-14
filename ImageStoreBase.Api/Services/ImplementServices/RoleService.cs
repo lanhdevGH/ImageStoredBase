@@ -40,15 +40,15 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             };
         }
 
-        public async Task<IEnumerable<Role>> GetAllAsync()
+        public async Task<List<Role>> GetAllAsync()
         {
             return await _roleManager.Roles.ToListAsync();
         }
 
-        public async Task<Role> GetByIdAsync(string id)
+        public async Task<Role?> GetByIdAsync(string id)
         {
-            var role = await _roleManager.FindByIdAsync(id.ToString());
-            return role ?? throw new KeyNotFoundException("Role id not found");
+            var role = await _roleManager.FindByIdAsync(id);
+            return role;
         }
 
         public async Task<string> CreateAsync(RoleCreateRequestDTO roleCreateDTO)
@@ -91,20 +91,18 @@ namespace ImageStoreBase.Api.Services.ImplementServices
         }
 
         // Lấy danh sách vai trò của người dùng
-        public async Task<IList<string>> GetUserRolesAsync(string userId)
+        public async Task<List<string>> GetUserRolesAsync(string userId)
         {
+            var result = new List<string>();
             var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                throw new KeyNotFoundException("User not found.");
-            }
-
-            return await _userManager.GetRolesAsync(user);
+            if (user == null) return result;
+            result.AddRange(await _userManager.GetRolesAsync(user));
+            return result;
         }
 
         public async Task<bool> UpdateAsync(string id, RoleUpdateRequestDTO roleUpdateDTO)
         {
-            var existingRole = await _roleManager.FindByIdAsync(id.ToString());
+            var existingRole = await _roleManager.FindByIdAsync(id);
             if (existingRole == null) return false;
 
             _mapper.Map(roleUpdateDTO, existingRole);
@@ -115,7 +113,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var role = await _roleManager.FindByIdAsync(id.ToString());
+            var role = await _roleManager.FindByIdAsync(id);
             if (role == null) return false;
 
             await _roleManager.DeleteAsync(role);

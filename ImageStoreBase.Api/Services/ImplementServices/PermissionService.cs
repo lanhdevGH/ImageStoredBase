@@ -22,7 +22,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        public async Task<IEnumerable<PermissionScreenResponseDTO>> GetCommandViewsAsync()
+        public async Task<List<PermissionScreenResponseDTO>> GetCommandViewsAsync()
         {
             // Bước 1: Lấy danh sách các command ID từ database
             var commandList = await _context.Commands
@@ -54,12 +54,12 @@ namespace ImageStoreBase.Api.Services.ImplementServices
                     cmdId => cmdId, // Key của Dictionary
                     cmdId => x.CommandCounts.FirstOrDefault(c => c.CommandId == cmdId)?.Count ?? 0 // Giá trị (số lần xuất hiện)
                 )
-            });
+            }).ToList();
 
             return result;
         }
 
-        public async Task<IEnumerable<PermissionVMDTO>> GetPermissionByRole(string roleName)
+        public async Task<List<PermissionVMDTO>> GetPermissionByRole(string roleName)
         {
             return await _context.Permissions
                 .Where(x => x.RoleName == roleName)
@@ -71,7 +71,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
                 }).ToListAsync();
         }
 
-        public async Task<IEnumerable<FunctionResponseDTO>> GetPermissionByUser(string userId)
+        public async Task<List<FunctionResponseDTO>> GetPermissionByUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
