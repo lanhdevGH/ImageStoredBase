@@ -9,10 +9,10 @@ namespace ImageStoreBase.Api.Services
     {
         Task<PagedResult<User>> GetPagedAsync(int pageNumber, int pageSize);
         Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(UserCreateRequestDTO userCreateDTO);
+        Task<User> GetByIdAsync(string id);
+        Task<string> CreateAsync(UserCreateRequestDTO userCreateDTO);
         Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
-        Task<bool> UpdateAsync(Guid id, UserUpdateRequestDTO userUpdateDTO);
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(string id, UserUpdateRequestDTO userUpdateDTO);
+        Task<bool> DeleteAsync(string id);
     }
 }

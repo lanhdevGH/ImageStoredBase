@@ -45,18 +45,18 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return await _roleManager.Roles.ToListAsync();
         }
 
-        public async Task<Role> GetByIdAsync(Guid id)
+        public async Task<Role> GetByIdAsync(string id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
             return role ?? throw new KeyNotFoundException("Role id not found");
         }
 
-        public async Task<Guid> CreateAsync(RoleCreateRequestDTO roleCreateDTO)
+        public async Task<string> CreateAsync(RoleCreateRequestDTO roleCreateDTO)
         {
             var newRole = _mapper.Map<Role>(roleCreateDTO);
             newRole.Id = Guid.NewGuid();
             await _roleManager.CreateAsync(newRole);
-            return newRole.Id;
+            return newRole.Id.ToString();
         }
 
         // Gán vai trò cho người dùng
@@ -102,7 +102,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return await _userManager.GetRolesAsync(user);
         }
 
-        public async Task<bool> UpdateAsync(Guid id, RoleUpdateRequestDTO roleUpdateDTO)
+        public async Task<bool> UpdateAsync(string id, RoleUpdateRequestDTO roleUpdateDTO)
         {
             var existingRole = await _roleManager.FindByIdAsync(id.ToString());
             if (existingRole == null) return false;
@@ -113,7 +113,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return true;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
             if (role == null) return false;

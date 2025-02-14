@@ -8,12 +8,12 @@ namespace ImageStoreBase.Api.Services
     {
         Task<PagedResult<Role>> GetPagedAsync(int pageNumber, int pageSize);
         Task<IEnumerable<Role>> GetAllAsync();
-        Task<Role> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(RoleCreateRequestDTO roleCreateDTO);
+        Task<Role> GetByIdAsync(string id);
+        Task<string> CreateAsync(RoleCreateRequestDTO roleCreateDTO);
         Task<bool> AddUserToRoleAsync(string userId, string roleName);
         Task<bool> RemoveUserFromRoleAsync(string userId, string roleName);
         Task<IList<string>> GetUserRolesAsync(string userId);
-        Task<bool> UpdateAsync(Guid id, RoleUpdateRequestDTO roleUpdateDTO);
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> UpdateAsync(string id, RoleUpdateRequestDTO roleUpdateDTO);
+        Task<bool> DeleteAsync(string id);
     }
 }

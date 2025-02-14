@@ -33,7 +33,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var collection = await _collectionService.GetByIdAsync(id);
             if (collection == null) return NotFound();
@@ -50,7 +50,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] CollectionUpdateRequestDTO collection)
+        public async Task<IActionResult> Update(string id, [FromBody] CollectionUpdateRequestDTO collection)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -60,7 +60,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _collectionService.DeleteAsync(id);
             if (!result) return NotFound();

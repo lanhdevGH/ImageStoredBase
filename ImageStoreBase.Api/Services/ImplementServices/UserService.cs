@@ -45,13 +45,13 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return await _userManager.Users.ToListAsync();
         }
 
-        public async Task<User> GetByIdAsync(Guid id)
+        public async Task<User> GetByIdAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             return user ?? throw new KeyNotFoundException("User id not found");
         }
 
-        public async Task<Guid> CreateAsync(UserCreateRequestDTO userCreateDTO)
+        public async Task<string> CreateAsync(UserCreateRequestDTO userCreateDTO)
         {
             var newUser = _mapper.Map<User>(userCreateDTO);
             newUser.Id = Guid.NewGuid();
@@ -72,7 +72,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
                 var allErrors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new CreateUserException($"User creation failed: {allErrors}");
             }
-            return newUser.Id;
+            return newUser.Id.ToString();
         }
 
         public async Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
@@ -93,7 +93,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return result.Succeeded;
         }
 
-        public async Task<bool> UpdateAsync(Guid id, UserUpdateRequestDTO userUpdateDTO)
+        public async Task<bool> UpdateAsync(string id, UserUpdateRequestDTO userUpdateDTO)
         {
             var existingUser = await _userManager.FindByIdAsync(id.ToString());
             if (existingUser == null) return false;
@@ -104,7 +104,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return true;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null) return false;

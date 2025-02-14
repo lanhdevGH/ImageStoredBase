@@ -9,9 +9,9 @@ namespace ImageStoreBase.Api.Services
     {
         Task<PagedResult<Collection>> GetPagedAsync(int pageNumber, int pageSize);
         Task<IEnumerable<Collection>> GetAllAsync();
-        Task<Collection> GetByIdAsync(Guid id);
-        Task<Guid> CreateAsync(CollectionCreateRequestDTO product);
-        Task<bool> UpdateAsync(Guid id, CollectionUpdateRequestDTO product);
-        Task<bool> DeleteAsync(Guid id);
+        Task<Collection> GetByIdAsync(string id);
+        Task<string> CreateAsync(CollectionCreateRequestDTO product);
+        Task<bool> UpdateAsync(string id, CollectionUpdateRequestDTO product);
+        Task<bool> DeleteAsync(string id);
     }
 }

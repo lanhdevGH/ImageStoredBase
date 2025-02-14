@@ -44,22 +44,22 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return await _context.Collections.ToListAsync();
         }
 
-        public async Task<Collection> GetByIdAsync(Guid id)
+        public async Task<Collection> GetByIdAsync(string id)
         {
             var collection = await _context.Collections.FindAsync(id);
             return collection ?? throw new KeyNotFoundException("Collection not found");
         }
 
-        public async Task<Guid> CreateAsync(CollectionCreateRequestDTO collectionCreateDTO)
+        public async Task<string> CreateAsync(CollectionCreateRequestDTO collectionCreateDTO)
         {
             var newCollection = _mapper.Map<Collection>(collectionCreateDTO);
             newCollection.Id = Guid.NewGuid();
             await _context.Collections.AddAsync(newCollection);
             await _context.SaveChangesAsync();
-            return newCollection.Id;
+            return newCollection.Id.ToString();
         }
 
-        public async Task<bool> UpdateAsync(Guid id, CollectionUpdateRequestDTO collectionUpdateDTO)
+        public async Task<bool> UpdateAsync(string id, CollectionUpdateRequestDTO collectionUpdateDTO)
         {
             var existingCollection = await _context.Collections.FindAsync(id);
             if (existingCollection == null) return false;
@@ -71,7 +71,7 @@ namespace ImageStoreBase.Api.Services.ImplementServices
             return true;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(string id)
         {
             var collection = await _context.Collections.FindAsync(id);
             if (collection == null) return false;

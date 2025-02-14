@@ -33,7 +33,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound();
@@ -50,7 +50,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequestDTO user)
+        public async Task<IActionResult> Update(string id, [FromBody] UserUpdateRequestDTO user)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -60,7 +60,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _userService.DeleteAsync(id);
             if (!result) return NotFound();
@@ -71,7 +71,6 @@ namespace ImageStoreBase.Api.Controllers
         public async Task<IActionResult> ChangePassword(string userId,
                                                         [FromBody] ChangePasswordRequestDTO changePasswordRequest)
         {
-            var a = userId;
             var result = await _userService.ChangePasswordAsync(userId,
                                                                 changePasswordRequest.CurrentPassword,
                                                                 changePasswordRequest.NewPassword);

@@ -32,7 +32,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(string id)
         {
             var role = await _roleService.GetByIdAsync(id);
             if (role == null) return NotFound();
@@ -49,7 +49,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] RoleUpdateRequestDTO role)
+        public async Task<IActionResult> Update(string id, [FromBody] RoleUpdateRequestDTO role)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -59,7 +59,7 @@ namespace ImageStoreBase.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _roleService.DeleteAsync(id);
             if (!result) return NotFound();
