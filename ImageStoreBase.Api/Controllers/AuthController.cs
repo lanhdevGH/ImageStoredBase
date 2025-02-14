@@ -82,6 +82,8 @@ namespace ImageStoreBase.Api.Controllers
                 return BadRequest("Invalid client request");
             var principal = _tokenProvider.GetPrincipalFromExpiredToken(tokenApiModel.Accesstoken);
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null) return BadRequest("Invalid token");
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user is null || user.RefreshToken != tokenApiModel.RefreshToken || user.ExpiryRefreshToken <= DateTime.UtcNow)
@@ -107,7 +109,8 @@ namespace ImageStoreBase.Api.Controllers
         [Route("revoke-token")]
         public async Task<IActionResult> Revoke()
         {
-            var username = User.Identity.Name;
+            var username = User?.Identity?.Name;
+            if (string.IsNullOrEmpty(username)) return BadRequest("Invalid client request");
             var user = await _userManager.FindByNameAsync(username);
             if (user == null) return BadRequest();
             user.RefreshToken = null;
